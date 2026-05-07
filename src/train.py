@@ -47,7 +47,7 @@ def _callbacks(weights_path: Path) -> list:
 
 def train_baseline(ds: dict) -> dict:
     print("\n[1/2] Training baseline CNN")
-    weights_path = MODELS_DIR / "baseline_cnn.h5"
+    weights_path = MODELS_DIR / "baseline_cnn.keras"
     model = compile_for_training(build_baseline_cnn())
     t0 = time.time()
     history = model.fit(
@@ -68,7 +68,7 @@ def train_baseline(ds: dict) -> dict:
 
 def train_resnet50(ds: dict) -> dict:
     print("\n[2/2] Training ResNet50 transfer (frozen → fine-tune)")
-    weights_path = MODELS_DIR / "resnet50_transfer.h5"
+    weights_path = MODELS_DIR / "resnet50_transfer.keras"
     model = compile_for_training(build_resnet50_transfer())
 
     t0 = time.time()

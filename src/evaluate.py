@@ -106,7 +106,7 @@ def plot_pr(y_true, y_pred, model_name: str) -> float:
 
 
 def evaluate_one(model_name: str, ds_test) -> dict:
-    weights = MODELS_DIR / f"{model_name}.h5"
+    weights = MODELS_DIR / f"{model_name}.keras"
     if not weights.exists():
         print(f"  [skip] {weights} not found")
         return None
@@ -168,7 +168,7 @@ def main() -> None:
     best = df_sorted.iloc[0].to_dict()
     info = {
         "best_model": best["model"],
-        "weights_path": str(MODELS_DIR / f"{best['model']}.h5"),
+        "weights_path": str(MODELS_DIR / f"{best['model']}.keras"),
         "test_auc": best["test_auc"],
         "test_accuracy": best["test_accuracy"],
         "all_models": df_sorted.to_dict(orient="records"),
