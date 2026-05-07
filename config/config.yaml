@@ -1,0 +1,44 @@
+# UCS321 EST Project — Statement #4 (Biocon Malaria RBC)
+# Central config for all pipeline stages
+
+project:
+  name: "Malaria RBC Classification"
+  statement_id: 4
+  course: "UCS321 - AI for Engineers"
+  seed: 42
+
+paths:
+  data_raw: "data/raw/cell_images"
+  data_processed: "data/processed"
+  models: "models"
+  reports: "reports"
+  figures: "reports/figures"
+
+data:
+  img_size: 128
+  channels: 3
+  train_split: 0.70
+  val_split: 0.15
+  test_split: 0.15
+  classes: ["Uninfected", "Parasitized"]
+
+training:
+  batch_size: 64
+  epochs_baseline: 12
+  epochs_transfer_frozen: 8
+  epochs_transfer_finetune: 5
+  learning_rate: 0.001
+  fine_tune_lr: 0.00001
+  early_stopping_patience: 4
+
+augmentation:
+  horizontal_flip: true
+  vertical_flip: true
+  rotation_range: 20
+  zoom_range: 0.15
+  brightness_range: [0.85, 1.15]
+  gaussian_noise_stddev: 0.02
+
+evaluation:
+  threshold: 0.5
+  gradcam_grid_size: 16

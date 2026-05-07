@@ -1,0 +1,104 @@
+"""Model architectures.
+
+Two models per the problem statement:
+
+  * baseline_cnn  — small custom CNN (3 conv blocks + dense). Trains fast on CPU.
+  * resnet50_transfer — ImageNet-pretrained ResNet50 with a fresh classifier head.
+                        Designed for two-stage training: frozen base, then fine-tune.
+"""
+from __future__ import annotations
+
+import tensorflow as tf
+from tensorflow.keras import layers, models
+from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.applications.resnet50 import preprocess_input
+
+from src.config import CFG, IMG_SIZE
+
+
+def _input_shape() -> tuple[int, int, int]:
+    return (IMG_SIZE, IMG_SIZE, 3)
+
+
+def build_baseline_cnn() -> tf.keras.Model:
+    inp = layers.Input(shape=_input_shape(), name="input")
+
+    x = layers.Conv2D(32, (3, 3), padding="same", activation="relu")(inp)
+    x = layers.BatchNormalization()(x)
+    x = layers.MaxPooling2D((2, 2))(x)
+
+    x = layers.Conv2D(64, (3, 3), padding="same", activation="relu")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.MaxPooling2D((2, 2))(x)
+
+    x = layers.Conv2D(128, (3, 3), padding="same", activation="relu")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.MaxPooling2D((2, 2))(x)
+
+    x = layers.GlobalAveragePooling2D()(x)
+    x = layers.Dropout(0.4)(x)
+    x = layers.Dense(64, activation="relu")(x)
+    x = layers.Dropout(0.3)(x)
+    out = layers.Dense(1, activation="sigmoid", name="prediction")(x)
+
+    model = models.Model(inp, out, name="baseline_cnn")
+    return model
+
+
+def build_resnet50_transfer() -> tf.keras.Model:
+    """ResNet50 (ImageNet) + small classification head.
+
+    The base is built frozen; train.py's fine-tune stage unfreezes the last
+    block and re-compiles with a low learning rate.
+    """
+    inp = layers.Input(shape=_input_shape(), name="input")
+    # Map [0,1] inputs back to the [-127.5, 151.06] space ResNet50 expects.
+    x = layers.Lambda(lambda t: preprocess_input(t * 255.0))(inp)
+
+    base = ResNet50(weights="imagenet", include_top=False, input_tensor=x)
+    base.trainable = False
+
+    h = layers.GlobalAveragePooling2D()(base.output)
+    h = layers.Dropout(0.4)(h)
+    h = layers.Dense(128, activation="relu")(h)
+    h = layers.Dropout(0.3)(h)
+    out = layers.Dense(1, activation="sigmoid", name="prediction")(h)
+
+    model = models.Model(inp, out, name="resnet50_transfer")
+    return model
+
+
+def compile_for_training(model: tf.keras.Model, learning_rate: float | None = None):
+    """Standard compile for both models — Adam + binary crossentropy + AUC."""
+    if learning_rate is None:
+        learning_rate = CFG["training"]["learning_rate"]
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(learning_rate=learning_rate),
+        loss="binary_crossentropy",
+        metrics=[
+            "accuracy",
+            tf.keras.metrics.AUC(name="auc"),
+            tf.keras.metrics.Precision(name="precision"),
+            tf.keras.metrics.Recall(name="recall"),
+        ],
+    )
+    return model
+
+
+def unfreeze_last_block(model: tf.keras.Model, num_layers: int = 30) -> None:
+    """Unfreeze top `num_layers` of the ResNet50 base for fine-tuning."""
+    for layer in model.layers:
+        layer.trainable = False
+    for layer in model.layers[-num_layers:]:
+        if not isinstance(layer, layers.BatchNormalization):
+            layer.trainable = True
+
+
+if __name__ == "__main__":
+    print("=== baseline_cnn ===")
+    m1 = compile_for_training(build_baseline_cnn())
+    m1.summary()
+    print("\n=== resnet50_transfer ===")
+    m2 = compile_for_training(build_resnet50_transfer())
+    print(f"Total params: {m2.count_params():,}")
+    print(f"Trainable params: {sum(tf.size(w).numpy() for w in m2.trainable_weights):,}")

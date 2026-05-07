@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UCS321 EST — Malaria RBC Classification</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-2: #334155;
+    --teal: #2dd4bf;
+    --yellow: #fbbf24;
+    --green: #34d399;
+    --red: #ef4444;
+    --indigo: #312e81;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+  }
+  .slide {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    padding: 4vh 6vw;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .slide.active { display: flex; }
+  h1 { color: var(--yellow); font-size: 3rem; margin-bottom: 1rem; }
+  h2 { color: var(--teal); font-size: 2.2rem; margin-bottom: 1.5rem; }
+  h3 { color: var(--green); font-size: 1.4rem; margin-bottom: 0.8rem; }
+  p, li { font-size: 1.15rem; line-height: 1.6; color: var(--text); }
+  ul { padding-left: 1.5rem; }
+  li { margin-bottom: 0.5rem; }
+  code {
+    background: var(--surface);
+    color: var(--teal);
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+    font-family: "SF Mono", Monaco, monospace;
+    font-size: 0.95em;
+  }
+  .subtitle { color: var(--muted); font-size: 1.4rem; margin-bottom: 2rem; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--surface-2);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    border-left: 4px solid var(--teal);
+  }
+  .card.yellow { border-left-color: var(--yellow); }
+  .card.green { border-left-color: var(--green); }
+  .card.red { border-left-color: var(--red); }
+  .metric {
+    background: var(--indigo);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid var(--teal);
+  }
+  .metric .value {
+    font-size: 2.5rem;
+    color: var(--yellow);
+    font-weight: bold;
+    display: block;
+  }
+  .metric .label { color: var(--muted); font-size: 0.95rem; margin-top: 0.3rem; }
+  .nav {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 2rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .nav button {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--surface-2);
+    padding: 0.5rem 1rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  .nav button:hover { background: var(--surface-2); border-color: var(--teal); }
+  .counter { color: var(--muted); font-size: 0.95rem; padding: 0 0.5rem; }
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    padding: 0.9rem 1.5rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--teal);
+  }
+  .flow-step.model { border-left-color: var(--yellow); }
+  .flow-step.eval { border-left-color: var(--green); }
+  .arrow { color: var(--teal); font-size: 1.5rem; }
+  table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  th, td { padding: 0.7rem 1rem; text-align: left; border-bottom: 1px solid var(--surface-2); }
+  th { color: var(--yellow); font-weight: 600; }
+  td { color: var(--text); }
+  .tag {
+    display: inline-block;
+    background: var(--indigo);
+    color: var(--teal);
+    padding: 0.2rem 0.7rem;
+    border-radius: 1rem;
+    font-size: 0.85rem;
+    margin-right: 0.4rem;
+  }
+  .footer {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 2rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. Title -->
+<section class="slide active">
+  <h1>Malaria RBC Classification</h1>
+  <p class="subtitle">Deep learning for automated diagnosis of blood samples</p>
+  <div class="grid-3" style="margin-top: 2rem;">
+    <div class="card">
+      <h3>Course</h3>
+      <p>UCS321 — AI for Engineers</p>
+      <p>EST Project</p>
+    </div>
+    <div class="card yellow">
+      <h3>Statement</h3>
+      <p>#4 — Biocon Ltd.</p>
+      <p>Advanced CNN + Grad-CAM</p>
+    </div>
+    <div class="card green">
+      <h3>Author</h3>
+      <p>Arun AK</p>
+      <p>B.E. CSE, Thapar University</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Problem Statement -->
+<section class="slide">
+  <h2>The Problem</h2>
+  <div class="card yellow" style="margin-bottom: 2rem;">
+    <p style="font-style: italic;">
+      "Biocon Ltd. is working on automated diagnosis of blood samples. Develop an
+      advanced CNN model to classify red blood cell images as healthy or
+      malaria-infected, addressing class imbalance, image noise, and variability,
+      while incorporating model interpretability (e.g., Grad-CAM) to assist medical
+      experts in validating predictions."
+    </p>
+  </div>
+  <h3>Key requirements</h3>
+  <div class="grid-2">
+    <ul>
+      <li><span class="tag">CNN</span> Build an advanced CNN model</li>
+      <li><span class="tag">Imbalance</span> Address class imbalance</li>
+      <li><span class="tag">Noise</span> Handle image noise</li>
+    </ul>
+    <ul>
+      <li><span class="tag">Variability</span> Handle visual variability</li>
+      <li><span class="tag">Grad-CAM</span> Interpretability for medical experts</li>
+      <li><span class="tag">Flow</span> Mandatory flow diagram</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3. Dataset -->
+<section class="slide">
+  <h2>Dataset — NIH Malaria Cell Images</h2>
+  <div class="grid-3">
+    <div class="metric"><span class="value">27,558</span><div class="label">Total RBC images</div></div>
+    <div class="metric"><span class="value">50 / 50</span><div class="label">Parasitized / Uninfected</div></div>
+    <div class="metric"><span class="value">PNG · RGB</span><div class="label">Variable resolution</div></div>
+  </div>
+  <h3 style="margin-top: 2rem;">Splits (stratified 70 / 15 / 15)</h3>
+  <table>
+    <tr><th>Split</th><th>Total</th><th>Uninfected</th><th>Parasitized</th></tr>
+    <tr><td>Train</td><td>19,290</td><td>9,645</td><td>9,645</td></tr>
+    <tr><td>Validation</td><td>4,133</td><td>2,066</td><td>2,067</td></tr>
+    <tr><td>Test</td><td>4,135</td><td>2,068</td><td>2,067</td></tr>
+  </table>
+</section>
+
+<!-- 4. Pipeline -->
+<section class="slide">
+  <h2>Pipeline</h2>
+  <div class="flow">
+    <div class="flow-step">📁 NIH Malaria Cell Images — 27,558 RBC images</div>
+    <div class="arrow">↓</div>
+    <div class="flow-step">🔧 Pre-processing — resize 128×128, normalize, stratified split</div>
+    <div class="arrow">↓</div>
+    <div class="flow-step">🎲 Augmentation — flip · rotation · brightness · contrast · noise</div>
+    <div class="arrow">↓</div>
+    <div class="flow-step model">🧠 Models — Baseline CNN + ResNet50 transfer learning</div>
+    <div class="arrow">↓</div>
+    <div class="flow-step model">🏋️ Training — Adam + EarlyStopping + ModelCheckpoint</div>
+    <div class="arrow">↓</div>
+    <div class="flow-step eval">📊 Evaluation — Accuracy · F1 · AUC · Confusion matrix</div>
+    <div class="arrow">↓</div>
+    <div class="flow-step eval">🔍 Grad-CAM Interpretability + 🩺 Streamlit Dashboard</div>
+  </div>
+</section>
+
+<!-- 5. Models -->
+<section class="slide">
+  <h2>Two Architectures Compared</h2>
+  <div class="grid-2">
+    <div class="card yellow">
+      <h3>Baseline CNN</h3>
+      <p><b>~100K parameters</b></p>
+      <ul>
+        <li>3 × (Conv2D 3×3 + BatchNorm + MaxPool)</li>
+        <li>32 → 64 → 128 filters</li>
+        <li>GlobalAveragePooling2D</li>
+        <li>Dense 64 → Dropout → Sigmoid</li>
+      </ul>
+      <p style="margin-top: 1rem;"><span class="tag">Fast</span> trains in minutes on CPU</p>
+    </div>
+    <div class="card">
+      <h3>ResNet50 Transfer</h3>
+      <p><b>~24M parameters</b></p>
+      <ul>
+        <li>ResNet50 base (ImageNet weights, frozen)</li>
+        <li>GlobalAveragePooling2D</li>
+        <li>Dense 128 → Dropout → Sigmoid</li>
+        <li>Two-stage: frozen → fine-tune top block</li>
+      </ul>
+      <p style="margin-top: 1rem;"><span class="tag">Accurate</span> ImageNet inductive bias</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Augmentation -->
+<section class="slide">
+  <h2>Addressing Noise & Variability</h2>
+  <p>Augmentation directly maps to the brief's requirements:</p>
+  <table>
+    <tr><th>Brief requirement</th><th>Implementation</th></tr>
+    <tr><td>Image noise</td><td>Gaussian noise injection (σ = 0.02)</td></tr>
+    <tr><td>Variability — orientation</td><td>Random horizontal & vertical flips</td></tr>
+    <tr><td>Variability — staining/lighting</td><td>Random brightness & contrast (±15%)</td></tr>
+    <tr><td>Variability — perspective</td><td>Random zoom & rotation (±20°)</td></tr>
+    <tr><td>Class imbalance</td><td>Stratified split + class-weighted loss capability</td></tr>
+  </table>
+</section>
+
+<!-- 7. Results placeholder -->
+<section class="slide">
+  <h2>Results</h2>
+  <p class="subtitle">Test-set metrics (filled after Colab training)</p>
+  <table>
+    <tr><th>Model</th><th>Accuracy</th><th>F1</th><th>AUC</th><th>PR-AUC</th></tr>
+    <tr><td>Baseline CNN</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>ResNet50 Transfer</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+  </table>
+  <p style="margin-top: 2rem; color: var(--muted);">
+    These metrics are auto-populated from <code>reports/model_comparison.csv</code> after running
+    <code>src/evaluate.py</code>. The NIH benchmark typically reaches ≥95% accuracy with ResNet50 transfer.
+  </p>
+</section>
+
+<!-- 8. Grad-CAM -->
+<section class="slide">
+  <h2>Grad-CAM — Why the model decides</h2>
+  <div class="grid-2">
+    <div>
+      <h3>What it does</h3>
+      <p>Highlights which pixels contributed most to the prediction. For Parasitized samples, the model should focus on parasite-shaped artifacts inside the cell.</p>
+      <h3 style="margin-top: 1.5rem;">Why it matters</h3>
+      <p>Medical experts cannot trust a black box. Grad-CAM gives them a visual hand-off — "the model saw this region; here's why."</p>
+    </div>
+    <div class="card green">
+      <h3>Generated views</h3>
+      <ul>
+        <li>4×4 grid — True Positives (correct parasite calls)</li>
+        <li>4×4 grid — True Negatives (correct healthy calls)</li>
+        <li>4×4 grid — False Positives (review with experts)</li>
+        <li>4×4 grid — False Negatives (most clinically dangerous — investigate)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Dashboard -->
+<section class="slide">
+  <h2>Dashboard — Streamlit</h2>
+  <div class="grid-2">
+    <div>
+      <h3>Workflow</h3>
+      <ol style="padding-left: 1.5rem;">
+        <li>User uploads an RBC image (PNG/JPG)</li>
+        <li>App resizes to 128×128 and predicts</li>
+        <li>Probability + class label shown</li>
+        <li>Grad-CAM overlay reveals model focus</li>
+      </ol>
+      <p style="margin-top: 1.5rem;">
+        Run with: <code>streamlit run dashboard/app.py</code>
+      </p>
+    </div>
+    <div class="card">
+      <h3>Sidebar surfaces</h3>
+      <ul>
+        <li>Best model (auto-picked by test AUC)</li>
+        <li>Test accuracy & AUC</li>
+        <li>Per-model comparison table</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 10. Closing -->
+<section class="slide">
+  <h2>Summary</h2>
+  <div class="grid-3">
+    <div class="card yellow">
+      <h3>What was built</h3>
+      <p>End-to-end CNN pipeline with two architectures, Grad-CAM, dashboard, and presentation</p>
+    </div>
+    <div class="card">
+      <h3>Brief satisfied</h3>
+      <p>Advanced CNN ✓ · Imbalance ✓ · Noise ✓ · Variability ✓ · Grad-CAM ✓ · Flow diagram ✓</p>
+    </div>
+    <div class="card green">
+      <h3>Reproducible</h3>
+      <p>One Colab notebook trains everything; one Streamlit app demos it</p>
+    </div>
+  </div>
+  <p style="margin-top: 3rem; color: var(--muted); text-align: center; font-size: 1.1rem;">
+    UCS321 EST Project · Statement #4 · Arun AK · 2026
+  </p>
+</section>
+
+<div class="footer">UCS321 EST · Malaria RBC Classification</div>
+<div class="nav">
+  <button onclick="prevSlide()">←</button>
+  <span class="counter" id="counter">1 / 10</span>
+  <button onclick="nextSlide()">→</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+  let i = 0;
+  function show(n) {
+    slides[i].classList.remove('active');
+    i = (n + slides.length) % slides.length;
+    slides[i].classList.add('active');
+    counter.textContent = `${i + 1} / ${slides.length}`;
+  }
+  function nextSlide() { show(i + 1); }
+  function prevSlide() { show(i - 1); }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+    if (e.key === 'ArrowLeft') prevSlide();
+  });
+</script>
+</body>
+</html>
