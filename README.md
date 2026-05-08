@@ -96,6 +96,21 @@ See `reports/flow_diagram.png` for the visual pipeline.
 
 ---
 
+## Results
+
+Trained on Google Colab (T4 GPU). Test set: 4,135 images held out from training.
+
+| Model | Accuracy | Precision | Recall | F1 | ROC-AUC | PR-AUC |
+|---|---|---|---|---|---|---|
+| **Baseline CNN** ⭐ | **95.50%** | 95.52% | 95.50% | **0.9550** | **0.9883** | **0.9888** |
+| ResNet50 Transfer | 94.53% | 94.64% | 94.53% | 0.9453 | 0.9871 | 0.9876 |
+
+**Best model: Baseline CNN** — surprisingly, the small custom architecture (~100K params) edged out ResNet50 transfer (~24M params) by ~1 point on every metric. Likely reason: ResNet50's ImageNet feature distribution is far from microscopy stains, so its inductive bias works against it; the lightweight CNN learns task-specific features without the baggage.
+
+Confusion matrix (Baseline CNN): 1,995 true negatives · 1,954 true positives · 73 false positives · 113 false negatives. Per-class F1: Uninfected 0.9555, Parasitized 0.9546.
+
+All figures (training curves, ROC, PR, confusion matrices, Grad-CAM grids) are in `reports/figures/`.
+
 ## Tech Stack
 
 - **TensorFlow / Keras 2.15+** — model definitions & training

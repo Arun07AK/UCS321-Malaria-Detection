@@ -263,18 +263,56 @@
   </table>
 </section>
 
-<!-- 7. Results placeholder -->
+<!-- 7. Results -->
 <section class="slide">
   <h2>Results</h2>
-  <p class="subtitle">Test-set metrics (filled after Colab training)</p>
+  <p class="subtitle">Test set: 4,135 held-out RBC images · trained on Colab T4 GPU</p>
   <table>
-    <tr><th>Model</th><th>Accuracy</th><th>F1</th><th>AUC</th><th>PR-AUC</th></tr>
-    <tr><td>Baseline CNN</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-    <tr><td>ResNet50 Transfer</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><th>Model</th><th>Accuracy</th><th>F1</th><th>ROC-AUC</th><th>PR-AUC</th></tr>
+    <tr style="background: rgba(45, 212, 191, 0.08);">
+      <td><b>Baseline CNN</b> ⭐</td>
+      <td><b>95.50%</b></td>
+      <td><b>0.9550</b></td>
+      <td><b>0.9883</b></td>
+      <td><b>0.9888</b></td>
+    </tr>
+    <tr>
+      <td>ResNet50 Transfer</td>
+      <td>94.53%</td>
+      <td>0.9453</td>
+      <td>0.9871</td>
+      <td>0.9876</td>
+    </tr>
   </table>
-  <p style="margin-top: 2rem; color: var(--muted);">
-    These metrics are auto-populated from <code>reports/model_comparison.csv</code> after running
-    <code>src/evaluate.py</code>. The NIH benchmark typically reaches ≥95% accuracy with ResNet50 transfer.
+  <div class="grid-2" style="margin-top: 1.5rem;">
+    <div class="card green">
+      <h3>Best model: Baseline CNN</h3>
+      <p>The small custom CNN (~100K params) beat ResNet50 (~24M params) by ~1 point on every metric.</p>
+    </div>
+    <div class="card yellow">
+      <h3>Why?</h3>
+      <p>ResNet50's ImageNet inductive bias is far from microscopy stain distributions; the lightweight CNN learns task-specific features without the baggage.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7b. Confusion -->
+<section class="slide">
+  <h2>Confusion Matrix — Best Model</h2>
+  <p class="subtitle">Baseline CNN on the 4,135-image test set</p>
+  <div class="grid-2" style="margin-top: 1rem;">
+    <table>
+      <tr><th></th><th>Pred: Uninfected</th><th>Pred: Parasitized</th></tr>
+      <tr><th>Actual: Uninfected</th><td style="color: var(--green); font-weight: bold;">1,995 ✓</td><td style="color: var(--red);">73</td></tr>
+      <tr><th>Actual: Parasitized</th><td style="color: var(--red);">113</td><td style="color: var(--green); font-weight: bold;">1,954 ✓</td></tr>
+    </table>
+    <div>
+      <div class="metric" style="margin-bottom: 0.8rem;"><span class="value">3,949</span><div class="label">Correct predictions (95.5%)</div></div>
+      <div class="metric"><span class="value">186</span><div class="label">Errors — 73 FP + 113 FN</div></div>
+    </div>
+  </div>
+  <p style="margin-top: 1rem; color: var(--muted);">
+    Per-class F1: Uninfected 0.9555 · Parasitized 0.9546 — model is well-balanced across both classes.
   </p>
 </section>
 
@@ -352,7 +390,7 @@
 <div class="footer">UCS321 EST · Malaria RBC Classification</div>
 <div class="nav">
   <button onclick="prevSlide()">←</button>
-  <span class="counter" id="counter">1 / 10</span>
+  <span class="counter" id="counter">1 / 11</span>
   <button onclick="nextSlide()">→</button>
 </div>
 
