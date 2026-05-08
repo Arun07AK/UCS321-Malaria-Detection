@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#1E3A8A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="UCS321 Malaria">
+<title>UCS321 EST · Malaria RBC · Phone Cheatsheet</title>
+<style>
+  :root{
+    --navy:#1E3A8A; --navy-2:#2B4FB8; --red:#DC2626; --red-2:#EF4444;
+    --ink:#0F172A; --ink-2:#334155; --muted:#64748B;
+    --bg:#F8FAFC; --card:#FFFFFF; --line:#E2E8F0; --pill:#DBE7F9;
+    --ok:#0E7C4A; --warn:#B45309;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --navy:#93B4FF; --navy-2:#AFC5FF; --red:#FCA5A5; --red-2:#F87171;
+      --ink:#F1F5F9; --ink-2:#CBD5E1; --muted:#94A3B8;
+      --bg:#0B1220; --card:#111B2E; --line:#1E2A44; --pill:#1B2A4A;
+      --ok:#4ADE80; --warn:#FBBF24;
+    }
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font:16px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-text-size-adjust:100%;text-rendering:optimizeLegibility}
+  body{padding:
+    max(12px, env(safe-area-inset-top))
+    max(12px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom))
+    max(12px, env(safe-area-inset-left));}
+  header.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:#fff;border-radius:18px;padding:16px 18px 14px;box-shadow:0 6px 22px rgba(30,58,138,.22);
+    position:sticky;top:max(8px,env(safe-area-inset-top));z-index:30}
+  @media (prefers-color-scheme: dark){ header.hero{color:#0B1220} }
+  .hero .eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.85;font-weight:700}
+  .hero h1{margin:4px 0 0;font-size:18px;font-weight:800;line-height:1.25}
+  .hero .sub{margin-top:6px;font-size:13px;opacity:.92}
+  .hero .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .chip{background:rgba(255,255,255,.18);padding:4px 9px;border-radius:999px;font-size:11px;font-weight:700}
+  @media (prefers-color-scheme: dark){ .chip{background:rgba(11,18,32,.25)} }
+
+  nav.tabs{display:flex;gap:6px;overflow-x:auto;margin:12px -4px 0;padding:2px 4px 6px;
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  nav.tabs a{flex:0 0 auto;scroll-snap-align:start;background:var(--card);color:var(--ink);
+    border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:700;
+    text-decoration:none;min-height:36px;display:inline-flex;align-items:center}
+  nav.tabs a.red{border-color:color-mix(in oklab,var(--red) 30%,var(--line));color:var(--red)}
+
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    margin:12px 0;box-shadow:0 2px 10px rgba(15,23,42,.04);overflow:hidden}
+  .card>.bar{height:6px;background:var(--red)}
+  .card.blue>.bar{background:var(--navy)}
+  .card>.body{padding:14px 14px 12px}
+  .card h2{margin:0 0 6px;font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .card h2 small{display:block;color:var(--muted);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+  .pill{display:inline-block;background:var(--pill);color:var(--navy);padding:3px 10px;border-radius:999px;
+    font-size:11px;font-weight:700;letter-spacing:.04em}
+
+  details{border-top:1px solid var(--line)}
+  details:first-of-type{border-top:0}
+  details>summary{list-style:none;cursor:pointer;padding:14px 14px;min-height:48px;
+    display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--ink)}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary .tag{flex:0 0 auto;width:30px;height:30px;border-radius:8px;display:inline-grid;place-items:center;
+    background:var(--pill);color:var(--navy);font-weight:800;font-size:12px}
+  details.red>summary .tag{background:color-mix(in oklab,var(--red) 18%,var(--card));color:var(--red)}
+  details>summary .chev{margin-left:auto;color:var(--muted);transition:transform .2s}
+  details[open]>summary .chev{transform:rotate(90deg)}
+  details>.inner{padding:0 14px 14px 54px}
+
+  .say{background:linear-gradient(0deg,color-mix(in oklab,var(--navy) 6%,var(--card)),var(--card));
+    border:1px dashed color-mix(in oklab,var(--navy) 35%,var(--line));border-radius:12px;
+    padding:10px 12px;margin:8px 0;color:var(--ink)}
+  .say b{color:var(--navy)}
+  .analogy{background:color-mix(in oklab,var(--red) 7%,var(--card));
+    border-left:3px solid var(--red);border-radius:10px;padding:10px 12px;margin:8px 0;color:var(--ink-2);font-size:14.5px}
+  .analogy b{color:var(--red)}
+
+  ul.tight{margin:6px 0 4px;padding-left:18px;color:var(--ink-2)}
+  ul.tight li{margin:3px 0}
+
+  .grid3{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
+  .mini{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .mini .name{font-weight:800;color:var(--navy);font-size:14px}
+  .mini .what{color:var(--muted);font-size:12.5px;margin-top:2px}
+
+  .qa{border-top:1px solid var(--line)}
+  .qa:first-of-type{border-top:0}
+  .qa>summary{padding:12px 14px;font-weight:700;color:var(--ink);min-height:44px;display:flex;align-items:center;gap:8px;cursor:pointer}
+  .qa>summary::-webkit-details-marker{display:none}
+  .qa>summary:before{content:"Q";flex:0 0 auto;width:24px;height:24px;border-radius:6px;background:var(--pill);color:var(--navy);display:inline-grid;place-items:center;font-weight:800;font-size:11px}
+  .qa>.a{padding:0 14px 14px 14px;color:var(--ink-2);line-height:1.5}
+  .qa>.a:before{content:"A ";color:var(--red);font-weight:800}
+
+  .pitch{background:linear-gradient(135deg,color-mix(in oklab,var(--red) 10%,var(--card)),var(--card));
+    border:1px solid color-mix(in oklab,var(--red) 30%,var(--line))}
+  .pitch h2{color:var(--red)}
+  .pitch .seconds{font-variant-numeric:tabular-nums;color:var(--red);font-weight:800;font-size:11px;letter-spacing:.1em}
+  .pitch p{margin:6px 0;color:var(--ink)}
+
+  /* Pipeline list */
+  .pipeline{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .pstep{display:flex;align-items:flex-start;gap:10px;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .pstep .num{flex:0 0 auto;width:28px;height:28px;border-radius:8px;background:var(--navy);color:#fff;
+    display:inline-grid;place-items:center;font-weight:800;font-size:12px}
+  @media (prefers-color-scheme: dark){ .pstep .num{color:#0B1220} }
+  .pstep .what{flex:1;min-width:0}
+  .pstep .what b{color:var(--ink);font-size:14px}
+  .pstep .what span{display:block;color:var(--muted);font-size:12.5px;margin-top:2px;line-height:1.4}
+
+  /* Result table */
+  .restable{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px}
+  .restable th, .restable td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line)}
+  .restable th{color:var(--muted);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .restable td.metric{font-variant-numeric:tabular-nums;font-weight:700;color:var(--navy)}
+  .restable tr.win{background:color-mix(in oklab,var(--ok) 8%,var(--card))}
+  .restable tr.win td{color:var(--ok)}
+  .restable tr.win td:first-child:before{content:"★ ";color:var(--ok);font-weight:800}
+
+  /* Confusion matrix tally */
+  .cmgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+  .cmcell{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+  .cmcell.ok{border-color:color-mix(in oklab,var(--ok) 40%,var(--line));background:color-mix(in oklab,var(--ok) 6%,var(--card))}
+  .cmcell.bad{border-color:color-mix(in oklab,var(--red) 35%,var(--line));background:color-mix(in oklab,var(--red) 6%,var(--card))}
+  .cmcell .n{font-size:18px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
+  .cmcell .k{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+
+  footer{margin-top:16px;padding:12px 6px;color:var(--muted);font-size:11.5px;text-align:center}
+  footer b{color:var(--ink-2)}
+  footer a{color:var(--navy);text-decoration:none;font-weight:700}
+
+  summary:active{background:color-mix(in oklab,var(--navy) 5%,var(--card))}
+  .toc-note{font-size:12px;color:var(--muted);margin:6px 2px 0}
+  :target{scroll-margin-top:120px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">UCS321 · EST PROJECT · STATEMENT #4 (BIOCON)</div>
+  <h1>Malaria RBC Classification — Phone Cheatsheet</h1>
+  <div class="sub">Arun AK · 1024170121 · for the EST viva walkthrough</div>
+  <div class="row">
+    <span class="chip">95.5% acc</span>
+    <span class="chip">27,558 imgs</span>
+    <span class="chip">Grad-CAM</span>
+    <span class="chip">5-min walkthrough</span>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Jump to section">
+  <a href="#pitch" class="red">30-sec pitch</a>
+  <a href="#brief">Brief mapping</a>
+  <a href="#pipeline">Pipeline</a>
+  <a href="#models">Models</a>
+  <a href="#results">Results</a>
+  <a href="#qa" class="red">If asked…</a>
+  <a href="#oneliners">One-liners</a>
+</nav>
+
+<p class="toc-note">Tap any section to expand. Works offline. Add to Home Screen for one-tap access.</p>
+
+<!-- =================== PITCH =================== -->
+<section id="pitch" class="card pitch">
+  <div class="bar" style="background:var(--red)"></div>
+  <div class="body">
+    <h2><small>30-SECOND PITCH · SAY THIS IF SOMEONE STOPS YOU</small>Elevator pitch</h2>
+    <p class="seconds">0–10s</p>
+    <p>“I built an <b>advanced CNN</b> to classify red blood cell images as malaria-infected or healthy — that’s <b>Statement #4 from Biocon</b>. The model hits <b>95.5% test accuracy</b> on the NIH benchmark.”</p>
+    <p class="seconds">10–20s</p>
+    <p>“I trained two architectures head-to-head — a <b>custom 100K-param CNN</b> built from scratch, and <b>ResNet50 transfer learning</b> with ImageNet weights. Same augmentation pipeline on both: flips, rotation, brightness, contrast, Gaussian noise — that handles the brief’s noise and variability requirements.”</p>
+    <p class="seconds">20–30s</p>
+    <p>“The surprise: the small custom CNN <b>beat ResNet50</b> by ~1 point on every metric. ImageNet doesn’t transfer well to microscopy. I added <b>Grad-CAM heatmaps</b> so a clinician can see <i>why</i> the model flagged a cell — that’s the interpretability requirement.”</p>
+  </div>
+</section>
+
+<!-- =================== BRIEF =================== -->
+<section id="brief" class="card">
+  <div class="bar"></div>
+  <div class="body">
+    <h2><small>BIOCON BRIEF · HOW EACH ASK IS SATISFIED</small>The five must-haves</h2>
+    <span class="pill">B1 · B2 · B3 · B4 · B5</span>
+  </div>
+
+  <details class="red" open>
+    <summary><span class="tag">B1</span>Advanced CNN model<span class="chev">›</span></summary>
+    <div class="inner">
+      <div class="analogy"><b>Analogy —</b> a junior radiologist learning to spot anomalies on cells. The CNN is that radiologist — it sees thousands of cells, learns the pattern, then flags the unfamiliar.</div>
+      <div class="say"><b>Say it like this:</b> “Two architectures — a custom CNN with three conv blocks for the baseline, and ResNet50 with ImageNet pretraining for transfer learning.”</div>
+      <ul class="tight">
+        <li>Baseline CNN: Conv32 → Conv64 → Conv128 → GAP → Dense64 → Sigmoid · ~100K params.</li>
+        <li>ResNet50 transfer: ImageNet base · GAP → Dense128 → Sigmoid · ~24M params · two-stage (frozen → fine-tune).</li>
+        <li>Both compiled with Adam + binary crossentropy + EarlyStopping on val_AUC.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="red">
+    <summary><span class="tag">B2</span>Class imbalance<span class="chev">›</span></summary>
+    <div class="inner">
+      <div class="analogy"><b>Analogy —</b> a coin that lands heads 50/50. The dataset is already fair — I didn’t need to put a thumb on the scale, but I checked twice.</div>
+      <div class="say"><b>Say it like this:</b> “The NIH dataset is already 50/50 balanced — I verified in EDA. Stratified split + per-class F1 to confirm. Class-weighted loss kept as defensive code but not load-bearing.”</div>
+      <ul class="tight">
+        <li>Train: 9,645 / 9,645 · Val: 2,066 / 2,067 · Test: 2,068 / 2,067.</li>
+        <li>Per-class F1 reported separately: Uninfected 0.9555, Parasitized 0.9546.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="red">
+    <summary><span class="tag">B3</span>Image noise &amp; variability<span class="chev">›</span></summary>
+    <div class="inner">
+      <div class="analogy"><b>Analogy —</b> training a guard who only ever saw photos taken at noon. He fails at dusk. Augmentation forces the model to see every lighting, angle, and stain quality during training.</div>
+      <div class="say"><b>Say it like this:</b> “Every training image goes through random flips, rotation up to 20°, brightness and contrast jitter ±15%, and Gaussian noise σ=0.02. The model never sees the same image twice.”</div>
+      <ul class="tight">
+        <li><b>Noise</b> — Gaussian σ=0.02 on every training pass.</li>
+        <li><b>Orientation</b> — horizontal + vertical flips, ±20° rotation.</li>
+        <li><b>Stain / lighting drift</b> — brightness and contrast each jittered ±15%.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="red">
+    <summary><span class="tag">B4</span>Grad-CAM interpretability<span class="chev">›</span></summary>
+    <div class="inner">
+      <div class="analogy"><b>Analogy —</b> a doctor won’t trust a machine that just says “sick.” They need it to point and say <i>this region looks wrong</i>. Grad-CAM does exactly that — a heatmap over the cell.</div>
+      <div class="say"><b>Say it like this:</b> “Grad-CAM computes gradients of the prediction with respect to the last conv layer’s activations, then produces a heatmap of which pixels drove the call. For parasitized cells the hot zones land on the parasite blobs.”</div>
+      <ul class="tight">
+        <li>4×4 grids generated for True Positives, True Negatives, False Positives, False Negatives.</li>
+        <li>Live in the Streamlit dashboard: upload a cell image, see prediction + heatmap overlay.</li>
+        <li>Required by the brief: “assist medical experts in validating predictions.”</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="red">
+    <summary><span class="tag">B5</span>Mandatory flow diagram<span class="chev">›</span></summary>
+    <div class="inner">
+      <div class="say"><b>Say it like this:</b> “Page 2 of the brief explicitly required a flow diagram with pre-processing and visualization steps. It’s in <i>reports/flow_diagram.png</i> — generated programmatically so it stays in sync with the code.”</div>
+      <ul class="tight">
+        <li>5-stage diagram: Data → Pre-process → Augment → Train → Evaluate.</li>
+        <li>Rendered from <i>src/generate_flow_diagram.py</i> using matplotlib.</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- =================== PIPELINE =================== -->
+<section id="pipeline" class="card blue">
+  <div class="bar"></div>
+  <div class="body">
+    <h2><small>END-TO-END · 5 STAGES</small>What runs when you hit train</h2>
+    <div class="pipeline">
+      <div class="pstep"><div class="num">1</div><div class="what"><b>Data</b><span>NIH Malaria Cell Images · 27,558 RBCs · downloaded via Kaggle CLI</span></div></div>
+      <div class="pstep"><div class="num">2</div><div class="what"><b>Pre-process</b><span>Resize to 128×128 RGB · normalize to [0,1] · 70/15/15 stratified split, seed 42</span></div></div>
+      <div class="pstep"><div class="num">3</div><div class="what"><b>Augment</b><span>tf.data pipeline · flip · rotate · brightness · contrast · Gaussian noise</span></div></div>
+      <div class="pstep"><div class="num">4</div><div class="what"><b>Train</b><span>Both models · Adam · BCE · EarlyStopping · ModelCheckpoint · ReduceLROnPlateau · ~45 min on Colab T4</span></div></div>
+      <div class="pstep"><div class="num">5</div><div class="what"><b>Evaluate</b><span>Confusion matrix · ROC · PR · classification report · Grad-CAM 4×4 grids</span></div></div>
+    </div>
+    <div class="say" style="margin-top:10px"><b>Reproducible:</b> all hyperparams in <i>config/config.yaml</i> · same seed, same results.</div>
+  </div>
+</section>
+
+<!-- =================== MODELS =================== -->
+<section id="models" class="card blue">
+  <div class="bar"></div>
+  <div class="body">
+    <h2><small>TWO ARCHITECTURES · HEAD TO HEAD</small>What I trained and why</h2>
+    <span class="pill">A · B</span>
+  </div>
+
+  <details open>
+    <summary><span class="tag">A</span>Baseline CNN — built from scratch (won ★)<span class="chev">›</span></summary>
+    <div class="inner">
+      <div class="say"><b>One-liner:</b> “Three conv blocks, global average pooling, sigmoid head. Roughly 100K parameters — fits on a phone.”</div>
+      <div class="grid3">
+        <div class="mini"><div class="name">Block 1 · Conv 32 + BN + Pool</div><div class="what">Captures low-level edges and stain boundaries.</div></div>
+        <div class="mini"><div class="name">Block 2 · Conv 64 + BN + Pool</div><div class="what">Mid-level — cell shapes, texture clusters.</div></div>
+        <div class="mini"><div class="name">Block 3 · Conv 128 + BN + Pool</div><div class="what">Higher-level — parasite-like blobs / vacuoles.</div></div>
+        <div class="mini"><div class="name">Head · GAP → Dropout → Dense 64 → Sigmoid</div><div class="what">Compresses spatial map to a single probability.</div></div>
+      </div>
+      <ul class="tight">
+        <li>✅ Trains in ~12 min on Colab T4.</li>
+        <li>✅ Won the head-to-head — 95.50% test accuracy.</li>
+        <li>⚠️ Small capacity — would saturate on harder, larger benchmarks.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="tag">B</span>ResNet50 transfer learning<span class="chev">›</span></summary>
+    <div class="inner">
+      <div class="say"><b>One-liner:</b> “ImageNet pretrained ResNet50, frozen base, fresh classifier head. Two-stage training — head-only, then unfreeze the last block at lr=1e-5.”</div>
+      <div class="grid3">
+        <div class="mini"><div class="name">Stage 1 · frozen base</div><div class="what">8 epochs · base weights frozen · only head trained.</div></div>
+        <div class="mini"><div class="name">Stage 2 · fine-tune last block</div><div class="what">5 epochs · last block unfrozen · lr=1e-5 to avoid wrecking ImageNet features.</div></div>
+        <div class="mini"><div class="name">Head · GAP → Dropout → Dense 128 → Sigmoid</div><div class="what">Larger head than baseline to absorb 2048-dim ResNet features.</div></div>
+      </div>
+      <ul class="tight">
+        <li>⚠️ Lost the head-to-head: 94.53% acc · ~1 point behind on every metric.</li>
+        <li>⚠️ Trains slower — ~31 min total on Colab T4.</li>
+        <li>✅ Still useful as a sanity-check baseline; demonstrates the “transfer doesn’t always help” lesson.</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- =================== RESULTS =================== -->
+<section id="results" class="card">
+  <div class="bar"></div>
+  <div class="body">
+    <h2><small>HELD-OUT TEST SET · 4,135 IMAGES</small>Final numbers</h2>
+    <table class="restable">
+      <tr><th>Model</th><th>Acc</th><th>F1</th><th>ROC-AUC</th></tr>
+      <tr class="win"><td>Baseline CNN</td><td class="metric">95.50%</td><td class="metric">0.9550</td><td class="metric">0.9883</td></tr>
+      <tr><td>ResNet50 Transfer</td><td class="metric">94.53%</td><td class="metric">0.9453</td><td class="metric">0.9871</td></tr>
+    </table>
+
+    <div style="margin-top:12px;color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700">Confusion matrix · Baseline CNN @ 0.5</div>
+    <div class="cmgrid">
+      <div class="cmcell ok"><div class="n">1,995</div><div class="k">True Negative</div></div>
+      <div class="cmcell bad"><div class="n">73</div><div class="k">False Positive</div></div>
+      <div class="cmcell bad"><div class="n">113</div><div class="k">False Negative</div></div>
+      <div class="cmcell ok"><div class="n">1,954</div><div class="k">True Positive</div></div>
+    </div>
+
+    <div class="say" style="margin-top:10px"><b>The surprise — own this:</b> a 100K-param custom CNN beat a 24M-param ResNet50 by ~1 point on every metric. ImageNet was trained on natural-scene photos. Microscopy is a totally different visual statistics — colour palette, texture scale, foreground geometry. Transfer hurts more than it helps when the source and target domains disagree this much.</div>
+  </div>
+</section>
+
+<!-- =================== Q&A =================== -->
+<section id="qa" class="card">
+  <div class="bar"></div>
+  <div class="body">
+    <h2><small>VIVA Q&amp;A · FALLBACK LINES</small>If asked …, say …</h2>
+  </div>
+
+  <details class="qa">
+    <summary>Why this dataset?</summary>
+    <div class="a">NIH Malaria Cell Images — the standard benchmark cited in most papers. 27,558 thin-smear cell crops, 50/50 balanced, openly licensed on Kaggle. Lets the result be compared apples-to-apples with published work.</div>
+  </details>
+  <details class="qa">
+    <summary>Why two models — wasn’t one enough?</summary>
+    <div class="a">The brief says <i>advanced</i> CNN. I read that as “show comparison reasoning.” Baseline CNN proves the task is tractable from scratch; ResNet50 tests whether transfer learning helps. The contrast is the interesting finding.</div>
+  </details>
+  <details class="qa">
+    <summary>Why did the small CNN beat ResNet50?</summary>
+    <div class="a">ImageNet’s inductive bias is natural-scene photos — colour palette, lighting, foreground geometry. Microscopy is none of those. Transfer learning hurts more than it helps when source and target domains disagree this much. The custom CNN learns task-specific filters from scratch with no prior baggage.</div>
+  </details>
+  <details class="qa">
+    <summary>How did you handle class imbalance?</summary>
+    <div class="a">The dataset is already 50/50 balanced — I verified in the EDA notebook. So I used a <i>stratified</i> 70/15/15 split + reported per-class F1 instead of leaning on weighted loss. The class-weighted-loss code is there as defensive scaffolding, but it’s not load-bearing.</div>
+  </details>
+  <details class="qa">
+    <summary>What about image noise and variability?</summary>
+    <div class="a">Augmentation pipeline runs on every training sample: Gaussian noise σ=0.02, horizontal + vertical flips, rotation ±20°, brightness ±15%, contrast ±15%. This directly addresses both requirements in the brief.</div>
+  </details>
+  <details class="qa">
+    <summary>How does Grad-CAM work?</summary>
+    <div class="a">It computes gradients of the prediction with respect to the activations of the last convolutional layer. The gradients are pooled into per-channel weights, then combined with the activations to produce a heatmap. Red = pixels that drove the decision. For parasitized cells, hot zones should overlap parasite blobs — gives clinicians a sanity check.</div>
+  </details>
+  <details class="qa">
+    <summary>Where would you set the decision threshold?</summary>
+    <div class="a">0.5 in my report. For real-world malaria screening you’d lower it to roughly 0.3 — missing a parasitized cell is clinically much worse than a false alarm. The ROC curve in <i>reports/figures/</i> shows the trade-off.</div>
+  </details>
+  <details class="qa">
+    <summary>What’s reproducible — and what’s the limit?</summary>
+    <div class="a">Fully reproducible: all hyperparams in <i>config.yaml</i>, fixed random seed, single Colab notebook trains end-to-end. Limit: the model is trained on <i>segmented single-cell crops</i>. To run on whole-slide thin-smear images you’d need to add a cell-detection front-end first.</div>
+  </details>
+  <details class="qa">
+    <summary>If you don’t know the answer</summary>
+    <div class="a">“That’s exactly one of the future-work items I flagged in the README — I don’t have a clean answer yet, which is why it’s on the next-steps list.” Honest, points to a real document, ends politely.</div>
+  </details>
+</section>
+
+<!-- =================== ONE-LINERS =================== -->
+<section id="oneliners" class="card blue">
+  <div class="bar"></div>
+  <div class="body">
+    <h2><small>LAST-GLANCE ONE-LINERS</small>Before you walk in</h2>
+    <ul class="tight" style="font-size:15px;line-height:1.55">
+      <li><b>Brief</b> — Statement #4: advanced CNN + imbalance + noise + variability + Grad-CAM.</li>
+      <li><b>Dataset</b> — NIH Malaria Cell Images, 27,558 RBCs, 50/50 balanced.</li>
+      <li><b>Splits</b> — 70/15/15 stratified, seed 42.</li>
+      <li><b>Result</b> — 95.50% acc · 0.988 ROC-AUC · Baseline CNN won.</li>
+      <li><b>Surprise</b> — 100K-param CNN beat 24M-param ResNet50.</li>
+      <li><b>Why</b> — ImageNet inductive bias ≠ microscopy stain distribution.</li>
+      <li><b>Interpret</b> — Grad-CAM heatmap shows the cell regions driving the prediction.</li>
+      <li><b>Code</b> — github.com/Arun07AK/UCS321-Malaria-Detection.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div><b>Arun AK · 1024170121 · CSE</b></div>
+  <div>UCS321 — AI for Engineers · TIET Patiala</div>
+  <div style="margin-top:6px"><a href="https://github.com/Arun07AK/UCS321-Malaria-Detection">github.com/Arun07AK/UCS321-Malaria-Detection</a></div>
+  <div style="margin-top:6px;opacity:.85">Add to Home Screen for one-tap access during the viva.</div>
+</footer>
+
+<script>
+  // Auto-collapse siblings within the same card when one opens
+  document.querySelectorAll('section.card').forEach(function(card){
+    var ds = card.querySelectorAll(':scope > details');
+    ds.forEach(function(d){
+      d.addEventListener('toggle', function(){
+        if(d.open){
+          ds.forEach(function(o){ if(o!==d) o.open=false; });
+          setTimeout(function(){
+            d.querySelector('summary').scrollIntoView({behavior:'smooth', block:'start'});
+          }, 80);
+        }
+      });
+    });
+  });
+  // Tab jump: open first details inside the target section
+  document.querySelectorAll('nav.tabs a').forEach(function(a){
+    a.addEventListener('click', function(){
+      var id = a.getAttribute('href').slice(1);
+      var target = document.getElementById(id);
+      if(!target) return;
+      var first = target.querySelector('details');
+      if(first) first.open = true;
+    });
+  });
+</script>
+</body>
+</html>

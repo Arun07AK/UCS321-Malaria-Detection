@@ -7,6 +7,15 @@ A complete deep-learning pipeline that classifies red blood cell images as **Par
 
 ---
 
+## Quick References
+
+- **Phone cheatsheet (live):** https://ucs321-malaria-cheatsheet.vercel.app — viva walkthrough, mobile-optimized
+- **Presentation deck:** [`presentation/presentation.html`](./presentation/presentation.html) — interactive 12-slide deck
+- **Flow diagram:** [`reports/flow_diagram.png`](./reports/flow_diagram.png) — required deliverable per project brief
+- **Results table:** [`reports/model_comparison.csv`](./reports/model_comparison.csv) — final test-set metrics
+
+---
+
 ## Quick Start
 
 ```bash
