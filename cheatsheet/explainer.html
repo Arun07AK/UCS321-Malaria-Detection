@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#1E3A8A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="UCS321 Malaria · Plain">
+<title>Malaria AI · Explained Simply</title>
+<style>
+  :root{
+    --navy:#1E3A8A; --navy-2:#2B4FB8; --red:#DC2626;
+    --ink:#0F172A; --ink-2:#334155; --muted:#64748B;
+    --bg:#F8FAFC; --card:#FFFFFF; --line:#E2E8F0; --pill:#DBE7F9;
+    --ok:#0E7C4A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --navy:#93B4FF; --navy-2:#AFC5FF; --red:#FCA5A5;
+      --ink:#F1F5F9; --ink-2:#CBD5E1; --muted:#94A3B8;
+      --bg:#0B1220; --card:#111B2E; --line:#1E2A44; --pill:#1B2A4A;
+      --ok:#4ADE80;
+    }
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font:17px/1.55 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-text-size-adjust:100%;text-rendering:optimizeLegibility}
+  body{padding:
+    max(12px, env(safe-area-inset-top))
+    max(14px, env(safe-area-inset-right))
+    max(20px, env(safe-area-inset-bottom))
+    max(14px, env(safe-area-inset-left));
+    max-width:680px;margin:0 auto}
+  header.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:#fff;border-radius:18px;padding:18px 20px 16px;box-shadow:0 6px 22px rgba(30,58,138,.22)}
+  @media (prefers-color-scheme: dark){ header.hero{color:#0B1220} }
+  .hero .eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.85;font-weight:700}
+  .hero h1{margin:6px 0 0;font-size:22px;font-weight:800;line-height:1.25}
+  .hero .sub{margin-top:8px;font-size:14px;opacity:.92;line-height:1.5}
+  .hero .switch{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:rgba(255,255,255,.18);
+    padding:5px 11px;border-radius:999px;font-size:11.5px;font-weight:700;color:#fff;text-decoration:none}
+  @media (prefers-color-scheme: dark){ .hero .switch{background:rgba(11,18,32,.25);color:#0B1220} }
+
+  /* Story chapters */
+  section.ch{margin:18px 0 0}
+  section.ch h2{display:flex;align-items:flex-start;gap:12px;margin:0 0 10px;font-size:20px;font-weight:800;color:var(--navy);line-height:1.25}
+  section.ch h2 .num{flex:0 0 auto;width:34px;height:34px;border-radius:10px;background:var(--navy);color:#fff;
+    display:inline-grid;place-items:center;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+  @media (prefers-color-scheme: dark){ section.ch h2 .num{color:#0B1220} }
+  section.ch h2.red .num{background:var(--red)}
+  section.ch p{margin:8px 0;color:var(--ink);line-height:1.6;font-size:16.5px}
+  section.ch p b{color:var(--navy);font-weight:700}
+  section.ch p i{color:var(--ink-2);font-style:italic}
+
+  /* Reusable callouts */
+  .think{background:linear-gradient(0deg,color-mix(in oklab,var(--navy) 6%,var(--card)),var(--card));
+    border:1px dashed color-mix(in oklab,var(--navy) 35%,var(--line));border-radius:14px;
+    padding:12px 14px;margin:10px 0;font-size:15.5px;color:var(--ink-2);line-height:1.55}
+  .think:before{content:"💡 Think of it like this — ";color:var(--navy);font-weight:800}
+
+  .aha{background:color-mix(in oklab,var(--red) 7%,var(--card));
+    border-left:4px solid var(--red);border-radius:12px;padding:12px 14px;margin:10px 0;
+    color:var(--ink-2);font-size:15.5px;line-height:1.55}
+  .aha:before{content:"😲 The surprise — ";color:var(--red);font-weight:800}
+
+  .nutshell{background:color-mix(in oklab,var(--ok) 7%,var(--card));
+    border-left:4px solid var(--ok);border-radius:12px;padding:12px 14px;margin:10px 0;
+    color:var(--ink-2);font-size:15.5px;line-height:1.55}
+  .nutshell:before{content:"🥥 In a nutshell — ";color:var(--ok);font-weight:800}
+
+  /* Big numbers */
+  .nums{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}
+  .num-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+  .num-card .v{font-size:24px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1}
+  .num-card .v.red{color:var(--red)}
+  .num-card .v.ok{color:var(--ok)}
+  .num-card .k{font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:6px}
+
+  /* Two-up cards */
+  .twoup{display:grid;grid-template-columns:1fr;gap:12px;margin:12px 0}
+  @media (min-width: 540px){ .twoup{grid-template-columns:1fr 1fr} }
+  .compare{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .compare h3{margin:0 0 6px;color:var(--navy);font-size:15px;font-weight:800}
+  .compare h3 .badge{display:inline-block;background:var(--pill);color:var(--navy);font-size:10.5px;font-weight:800;
+    padding:2px 8px;border-radius:999px;margin-left:6px;letter-spacing:.04em}
+  .compare h3 .badge.win{background:color-mix(in oklab,var(--ok) 18%,var(--card));color:var(--ok)}
+  .compare h3 .badge.lose{background:color-mix(in oklab,var(--red) 12%,var(--card));color:var(--red)}
+  .compare p{margin:6px 0;font-size:14px;color:var(--ink-2);line-height:1.5}
+
+  /* Simple step list */
+  .steps{margin:10px 0 4px;padding-left:0;list-style:none}
+  .steps li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+  .steps li:first-child{border-top:0}
+  .steps li .icon{flex:0 0 auto;width:32px;height:32px;border-radius:10px;background:var(--pill);color:var(--navy);
+    display:inline-grid;place-items:center;font-size:16px}
+  .steps li b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+  .steps li span{color:var(--ink-2);font-size:14px;line-height:1.5}
+
+  /* Glossary */
+  .glossary{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:14px 0}
+  .glossary h3{margin:0 0 8px;color:var(--navy);font-size:15px;font-weight:800}
+  .glossary dl{margin:0}
+  .glossary dt{margin-top:8px;color:var(--ink);font-weight:700;font-size:14.5px}
+  .glossary dt:first-child{margin-top:0}
+  .glossary dd{margin:2px 0 0;color:var(--ink-2);font-size:14px;line-height:1.5}
+
+  footer{margin-top:22px;padding:14px 6px;color:var(--muted);font-size:12px;text-align:center}
+  footer b{color:var(--ink-2)}
+  footer a{color:var(--navy);text-decoration:none;font-weight:700}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">UCS321 EST PROJECT · PLAIN LANGUAGE VERSION</div>
+  <h1>How I taught a computer to spot malaria in blood cells</h1>
+  <div class="sub">A simple, story-mode explanation. No jargon. By Arun AK · 1024170121.</div>
+  <a class="switch" href="/">← Back to viva cheatsheet (with terms)</a>
+</header>
+
+<!-- Chapter 1 — The problem -->
+<section class="ch">
+  <h2 class="red"><span class="num">1</span>The problem doctors face</h2>
+  <p>Malaria is a serious disease caused by tiny parasites that live <i>inside</i> red blood cells. To diagnose it, a doctor takes a drop of blood, smears it on a glass slide, dyes it with stain, and looks at it through a microscope — cell by cell — to find the ones that are infected.</p>
+  <p>One slide can have <b>thousands of cells</b>. Looking at all of them is slow, tiring, and easy to get wrong when the doctor is exhausted. In rural areas there often <b>aren't enough trained doctors</b> to do this fast enough.</p>
+  <div class="think">imagine asking one person to read every paragraph of a 500-page book and circle every typo. That's roughly what doctors do — except the "typos" are tiny parasite blobs hiding inside cells, and missing one means a sick patient goes home untreated.</div>
+</section>
+
+<!-- Chapter 2 — The idea -->
+<section class="ch">
+  <h2><span class="num">2</span>The idea — get a computer to look first</h2>
+  <p>If we can teach a computer to look at one cell and say <b>"healthy"</b> or <b>"infected,"</b> the doctor only has to double-check the ones the computer flagged. That saves enormous time and reduces fatigue errors.</p>
+  <p>The kind of computer program that does this is called an <b>AI image classifier</b>. You show it lots of pictures with the right answer marked, and it slowly figures out the visual pattern that tells the two apart.</p>
+  <div class="think">it's like teaching a kid to tell apples from oranges. You don't write down rules ("apples are round, oranges have bumpy skin"). You just show them hundreds of fruits and say "that's an apple, that's an orange." After enough examples, they just <i>know</i>.</div>
+</section>
+
+<!-- Chapter 3 — The data -->
+<section class="ch">
+  <h2><span class="num">3</span>What the computer learned from</h2>
+  <p>I used a free public collection of cell pictures from the US National Institutes of Health (NIH). Real microscope images, already labelled by experts.</p>
+  <div class="nums">
+    <div class="num-card"><div class="v">27,558</div><div class="k">Cell pictures</div></div>
+    <div class="num-card"><div class="v">50% / 50%</div><div class="k">Healthy / infected</div></div>
+  </div>
+  <p>I split them into three piles. Most went to <b>training</b> — that's what the program studies from. A smaller pile is for <b>practice tests</b> during training so we can see if it's improving. The last pile, the <b>final exam</b>, is hidden from the program until the very end — that's the only fair way to measure how good it really is.</p>
+  <ul class="steps">
+    <li><div class="icon">📚</div><div><b>Training set — 19,290 cells</b><span>The program studies these and slowly figures out the pattern.</span></div></li>
+    <li><div class="icon">📝</div><div><b>Practice tests — 4,133 cells</b><span>Used during training to spot when it starts memorising instead of learning.</span></div></li>
+    <li><div class="icon">🎓</div><div><b>Final exam — 4,135 cells</b><span>Locked away. The program never sees these until evaluation. This is the score that counts.</span></div></li>
+  </ul>
+  <div class="think">a student preparing for the board exam. They do textbook problems (training), they do mock tests (practice), and on exam day they get fresh problems they've never seen before (final exam). You only trust the exam score.</div>
+</section>
+
+<!-- Chapter 4 — The trick -->
+<section class="ch">
+  <h2 class="red"><span class="num">4</span>The little trick that makes it robust</h2>
+  <p>Real microscopes show pictures that aren't always perfect. Some are slightly tilted, some are darker, some have a bit of grain. If the program only ever saw <i>perfect</i> pictures during training, it would fail the moment a real-world picture comes in slightly different.</p>
+  <p>So during training I quietly <b>mess with each picture</b> a tiny bit before showing it. Flip it left-right. Tilt it a few degrees. Make it slightly brighter or darker. Add a sprinkle of grain. Same cell, different "outfit" each time.</p>
+  <div class="think">imagine a guard who only ever saw photos taken at noon. He'd fail at dusk. By showing him the same faces at different lighting, angles, and weather, he learns the <i>person</i>, not just the photo.</div>
+  <p>This single trick is what handles the <b>noise</b> and <b>variability</b> the project brief asks for.</p>
+</section>
+
+<!-- Chapter 5 — Two students -->
+<section class="ch">
+  <h2><span class="num">5</span>Two students, one exam</h2>
+  <p>I trained <b>two different programs</b> in parallel and let them compete on the same exam.</p>
+  <div class="twoup">
+    <div class="compare">
+      <h3>Student A — built from scratch <span class="badge win">Winner</span></h3>
+      <p>A small custom program designed just for this task. Started knowing nothing. About 100,000 little adjustable knobs inside that get tuned by training.</p>
+      <p><i>Like a fresh student who learns biology from scratch — no prior subject knowledge, just the textbook in front of them.</i></p>
+    </div>
+    <div class="compare">
+      <h3>Student B — pre-trained on internet photos <span class="badge lose">Runner-up</span></h3>
+      <p>A famous big program (24 million knobs) that was already pre-trained on millions of everyday photos — cats, cars, mountains. I just adjusted the last layer for cells.</p>
+      <p><i>Like a transfer student who already aced general science elsewhere, then was asked to specialise in malaria.</i></p>
+    </div>
+  </div>
+  <p>The intuition was that <b>Student B</b> should win — more experience, more knobs, smarter. But experiments don't always go the way you expect.</p>
+</section>
+
+<!-- Chapter 6 — Results -->
+<section class="ch">
+  <h2 class="red"><span class="num">6</span>Exam results</h2>
+  <div class="nums">
+    <div class="num-card"><div class="v ok">95.50%</div><div class="k">Student A score</div></div>
+    <div class="num-card"><div class="v">94.53%</div><div class="k">Student B score</div></div>
+  </div>
+  <p>Out of <b>4,135</b> exam questions (cells the program had never seen), Student A got <b>3,949 correct</b>. Only 186 mistakes — and most of those were edge cases where even doctors disagree.</p>
+  <div class="aha">the small custom program <b>beat</b> the big famous one. Student B had spent years studying internet photos — but malaria cells under a microscope look <i>nothing</i> like internet photos. All that prior knowledge was actually slightly in the way. Student A, knowing nothing, learned the <i>right</i> things from scratch.</div>
+  <p>This is a real lesson in machine learning: <b>more isn't always better</b>. Bigger models with irrelevant prior knowledge can lose to small models that learn the task fresh.</p>
+</section>
+
+<!-- Chapter 7 — Showing your work -->
+<section class="ch">
+  <h2><span class="num">7</span>Why doctors can trust it — "show your work"</h2>
+  <p>A score of 95.5% is nice. But would <b>you</b> trust a black box that just says "this person has malaria" without showing why?</p>
+  <p>So I added one more thing. After the program decides "infected" or "healthy," it also produces a <b>heatmap</b> — a coloured overlay on the original cell, where <b style="color:var(--red)">red regions</b> mark the parts of the cell that most influenced its decision.</p>
+  <p>For an infected cell, the red zones land right on the parasite blobs. The doctor can glance at it and say "yes, the program is looking at the right thing — I agree." Or they can override it. <b>The expert stays in control.</b></p>
+  <div class="think">a student showing their math working. If the answer is right but the working is nonsense, you don't trust them. The heatmap is the program's working.</div>
+  <div class="nutshell">the project ticks all five boxes from the brief: an advanced AI cell classifier, balanced training, robust to noise and variability, and a heatmap that lets a doctor sanity-check the decision. 95.5% accuracy on a 4,135-cell exam, with the surprise that simple beat fancy.</div>
+</section>
+
+<!-- Glossary -->
+<section class="ch">
+  <h2><span class="num">⚙</span>Tiny glossary</h2>
+  <div class="glossary">
+    <h3>If you want the technical names</h3>
+    <dl>
+      <dt>The "AI image classifier"</dt>
+      <dd>Technically called a <b>Convolutional Neural Network (CNN)</b>. The "convolutional" bit means it scans the image with small filters that detect local patterns.</dd>
+      <dt>"Messing with the picture"</dt>
+      <dd>Called <b>data augmentation</b> — flips, rotation, brightness, contrast, Gaussian noise.</dd>
+      <dt>"Pre-trained on internet photos"</dt>
+      <dd>The big model is <b>ResNet50</b>, pre-trained on a dataset called <b>ImageNet</b> (1.2M everyday photos). Adapting it to a new task is called <b>transfer learning</b>.</dd>
+      <dt>"Heatmap"</dt>
+      <dd>Called <b>Grad-CAM</b> (Gradient-weighted Class Activation Mapping). It uses calculus to figure out which pixels influenced the decision the most.</dd>
+      <dt>"Score 95.5%"</dt>
+      <dd>Test-set accuracy. Other metrics: <b>F1 = 0.955, ROC-AUC = 0.988, PR-AUC = 0.989</b> — different ways of summarising the same performance from slightly different angles.</dd>
+    </dl>
+  </div>
+</section>
+
+<footer>
+  <div><b>Arun AK · 1024170121 · CSE</b></div>
+  <div>UCS321 — AI for Engineers · TIET Patiala</div>
+  <div style="margin-top:6px"><a href="https://github.com/Arun07AK/UCS321-Malaria-Detection">github.com/Arun07AK/UCS321-Malaria-Detection</a></div>
+  <div style="margin-top:6px;opacity:.85">Plain-language explainer · written for anyone, no ML background needed.</div>
+</footer>
+
+</body>
+</html>
