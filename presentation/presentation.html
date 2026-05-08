@@ -1,415 +1,969 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UCS321 EST — Malaria RBC Classification</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>UCS321 EST · Malaria RBC Classification · Arun AK</title>
 <style>
-  :root {
-    --bg: #0f172a;
-    --surface: #1e293b;
-    --surface-2: #334155;
-    --teal: #2dd4bf;
-    --yellow: #fbbf24;
-    --green: #34d399;
-    --red: #ef4444;
-    --indigo: #312e81;
-    --text: #f1f5f9;
-    --muted: #94a3b8;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    overflow: hidden;
-  }
-  .slide {
-    display: none;
-    width: 100vw;
-    height: 100vh;
-    padding: 4vh 6vw;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .slide.active { display: flex; }
-  h1 { color: var(--yellow); font-size: 3rem; margin-bottom: 1rem; }
-  h2 { color: var(--teal); font-size: 2.2rem; margin-bottom: 1.5rem; }
-  h3 { color: var(--green); font-size: 1.4rem; margin-bottom: 0.8rem; }
-  p, li { font-size: 1.15rem; line-height: 1.6; color: var(--text); }
-  ul { padding-left: 1.5rem; }
-  li { margin-bottom: 0.5rem; }
-  code {
-    background: var(--surface);
-    color: var(--teal);
-    padding: 0.2rem 0.5rem;
-    border-radius: 0.3rem;
-    font-family: "SF Mono", Monaco, monospace;
-    font-size: 0.95em;
-  }
-  .subtitle { color: var(--muted); font-size: 1.4rem; margin-bottom: 2rem; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--surface-2);
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    border-left: 4px solid var(--teal);
-  }
-  .card.yellow { border-left-color: var(--yellow); }
-  .card.green { border-left-color: var(--green); }
-  .card.red { border-left-color: var(--red); }
-  .metric {
-    background: var(--indigo);
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    text-align: center;
-    border: 1px solid var(--teal);
-  }
-  .metric .value {
-    font-size: 2.5rem;
-    color: var(--yellow);
-    font-weight: bold;
-    display: block;
-  }
-  .metric .label { color: var(--muted); font-size: 0.95rem; margin-top: 0.3rem; }
-  .nav {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 2rem;
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-  }
-  .nav button {
-    background: var(--surface);
-    color: var(--text);
-    border: 1px solid var(--surface-2);
-    padding: 0.5rem 1rem;
-    border-radius: 0.4rem;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-  .nav button:hover { background: var(--surface-2); border-color: var(--teal); }
-  .counter { color: var(--muted); font-size: 0.95rem; padding: 0 0.5rem; }
-  .flow {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    text-align: center;
-    margin-top: 1rem;
-  }
-  .flow-step {
-    background: var(--surface);
-    padding: 0.9rem 1.5rem;
-    border-radius: 0.5rem;
-    border-left: 4px solid var(--teal);
-  }
-  .flow-step.model { border-left-color: var(--yellow); }
-  .flow-step.eval { border-left-color: var(--green); }
-  .arrow { color: var(--teal); font-size: 1.5rem; }
-  table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-  th, td { padding: 0.7rem 1rem; text-align: left; border-bottom: 1px solid var(--surface-2); }
-  th { color: var(--yellow); font-weight: 600; }
-  td { color: var(--text); }
-  .tag {
-    display: inline-block;
-    background: var(--indigo);
-    color: var(--teal);
-    padding: 0.2rem 0.7rem;
-    border-radius: 1rem;
-    font-size: 0.85rem;
-    margin-right: 0.4rem;
-  }
-  .footer {
-    position: fixed;
-    bottom: 1.5rem;
-    left: 2rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
+:root{
+  --navy:#1E3A8A; --navy-2:#2447B5; --ink:#0f172a;
+  --red:#DC2626; --red-soft:#FEE2E2; --red-soft-2:#FFF5F3;
+  --pill:#DBE7F9; --pill-b:#BFD5EF;
+  --bg:#f8fafc; --card:#ffffff; --muted:#64748b;
+  --box-b:#1E3A8A33;
+  --green:#059669;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0b1020;color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  overflow:hidden;height:100%}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;
+  background:radial-gradient(ellipse at 50% 10%, #1c2446 0%, #0b1020 55%, #05060f 100%);}
+.stage{
+  position:relative;
+  width:min(96vw, calc(96vh * 16 / 9));
+  aspect-ratio:16/9;
+  background:var(--bg);
+  box-shadow:0 10px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.04);
+  border-radius:12px;overflow:hidden;
+}
+.slide{position:absolute;inset:0;padding:28px 44px 56px;display:none;flex-direction:column;
+  container-type:inline-size;}
+.slide.active{display:flex;animation:fadein .28s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.red-topbar{position:absolute;top:0;left:0;right:0;height:10px;background:var(--red)}
+.footer{position:absolute;left:44px;right:44px;bottom:12px;display:flex;justify-content:space-between;
+  font-size:11px;color:#64748b;border-top:1px solid #e2e8f0;padding-top:8px}
+.footer .mid{color:#475569}
+.title-pill{background:var(--pill);border:1.5px solid var(--pill-b);border-radius:14px;
+  padding:14px 24px;text-align:center;color:var(--navy);font-weight:800;font-size:24px;
+  letter-spacing:.2px}
+.slide h1.main{font-size:42px;color:var(--navy);margin:10px 0 0;line-height:1.15;font-weight:800;
+  text-align:center}
+.slide h2.sub{font-size:22px;color:var(--navy);margin:0;font-weight:700}
+.title-top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:10px}
+.title-pill.big{margin:14px 2px 6px;padding:22px 28px;font-size:28px;border-width:2px}
+.id-badge{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:18px;
+  padding:8px 24px;border-radius:8px;letter-spacing:.3px}
+.title-author{margin-top:14px;text-align:center}
+.title-author .name{font-size:24px;font-weight:700;color:var(--navy)}
+.title-author .meta{color:#334155;font-size:14px;margin-top:2px}
+.title-author .meta.sm{color:#475569;font-style:italic;font-size:13px}
+.title-author .guide{font-size:18px;font-weight:700;margin-top:10px;color:var(--navy)}
+/* Generic layout helpers */
+.grid{display:grid;gap:14px}
+.grid.c2{grid-template-columns:1fr 1fr}
+.grid.c3{grid-template-columns:1fr 1fr 1fr}
+.grid.c4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1.5px solid var(--box-b);border-radius:10px;padding:14px 16px;
+  position:relative;min-height:0}
+.card.red-top::before{content:"";position:absolute;top:-1.5px;left:-1.5px;right:-1.5px;height:8px;
+  background:var(--red);border-top-left-radius:10px;border-top-right-radius:10px}
+.card.red-top{padding-top:20px}
+.card.blue-top::before{content:"";position:absolute;top:-1.5px;left:-1.5px;right:-1.5px;height:8px;
+  background:var(--navy);border-top-left-radius:10px;border-top-right-radius:10px}
+.card.blue-top{padding-top:20px}
+.card.green-top::before{content:"";position:absolute;top:-1.5px;left:-1.5px;right:-1.5px;height:8px;
+  background:var(--green);border-top-left-radius:10px;border-top-right-radius:10px}
+.card.green-top{padding-top:20px}
+.card h3{color:var(--navy);font-size:16px;margin:0 0 6px;font-weight:700}
+.card p{margin:0;color:#334155;font-size:13.5px;line-height:1.45}
+.card.center{text-align:center;padding:18px}
+.callout{background:var(--red-soft-2);border:1.5px solid var(--red);border-radius:10px;padding:12px 16px}
+.callout b{color:var(--red)}
+.infobox{background:#EEF3FB;border:1.5px solid var(--box-b);border-radius:10px;padding:12px 16px;color:#1e293b;font-size:14px;line-height:1.5}
+.badge-circle{width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;
+  justify-content:center;color:#fff;font-weight:800;font-size:18px;flex-shrink:0}
+.badge-circle.red{background:var(--red)}
+.badge-circle.blue{background:var(--navy)}
+.badge-circle.green{background:var(--green)}
+.row{display:flex;gap:14px;align-items:flex-start}
+.row + .row{margin-top:12px}
+.row.center{align-items:center}
+.pill-red{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:13px;
+  padding:4px 10px;border-radius:999px}
+.pill-blue{display:inline-block;background:var(--navy);color:#fff;font-weight:700;font-size:13px;
+  padding:4px 10px;border-radius:999px}
+.pill-green{display:inline-block;background:var(--green);color:#fff;font-weight:700;font-size:13px;
+  padding:4px 10px;border-radius:999px}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px}
+.tag{display:inline-block;background:#EEF3FB;color:var(--navy);font-weight:600;font-size:12px;
+  padding:4px 10px;border-radius:999px;border:1px solid var(--box-b)}
+.tag.red{background:var(--red-soft);color:var(--red);border-color:var(--red)}
+table.crit{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+table.crit td{padding:8px 12px;border-bottom:1px solid #e2e8f0;vertical-align:middle}
+table.crit tr:nth-child(odd) td{background:#EEF3FB}
+table.crit .num{color:var(--red);font-weight:800;width:36px;text-align:center}
+table.crit .name{font-weight:700;width:200px;color:var(--navy)}
+table.crit .desc{color:#334155}
+/* Outline */
+.outline-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 36px;margin-top:18px}
+.outline-item{display:flex;gap:14px;align-items:flex-start}
+.outline-item .badge-circle{width:50px;height:50px;font-size:20px}
+.outline-item h3{margin:2px 0 2px;color:var(--navy);font-size:17px}
+.outline-item p{margin:0;color:#64748b;font-style:italic;font-size:13px}
+/* Demo canvases */
+.demo{background:#fff;border:1.5px solid var(--box-b);border-radius:10px;padding:10px;position:relative}
+.demo .cap{font-size:12px;color:#64748b;margin-top:4px;line-height:1.4}
+.demo-title{color:var(--navy);font-weight:700;font-size:14px;margin-bottom:6px}
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:12.5px;color:#334155;margin-bottom:6px}
+.controls label{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.controls input[type=range]{accent-color:var(--navy);width:100px}
+.controls .readout{font-variant-numeric:tabular-nums;color:var(--navy);font-weight:700;min-width:42px;
+  display:inline-block;text-align:right}
+.controls .btn{background:var(--navy);color:#fff;border:none;border-radius:6px;padding:5px 12px;
+  font-weight:700;font-size:12px;cursor:pointer}
+.controls .btn.red{background:var(--red)}
+.controls .btn:hover{filter:brightness(1.08)}
+canvas.demoC{display:block;width:100%;height:auto;background:#fafbfd;border-radius:6px}
+/* Pipeline */
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;align-items:stretch;margin-top:14px}
+.pipe .pnode{background:#fff;border:1.5px solid var(--box-b);border-radius:10px;padding:14px 10px;
+  text-align:center;position:relative;font-size:13px}
+.pipe .pnode .tit{color:var(--navy);font-weight:700;font-size:14px;margin-bottom:4px}
+.pipe .pnode .sub{color:#64748b;font-size:11.5px;line-height:1.3}
+.pipe .arrow{position:absolute;right:-12px;top:50%;transform:translateY(-50%);
+  width:22px;height:22px;background:var(--red);color:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;z-index:2}
+.pipe .pnode:last-child .arrow{display:none}
+.pipe .pnode.lit{box-shadow:0 0 0 2px var(--red),0 0 16px rgba(220,38,38,.4)}
+/* Forward-pass demo (slide 8) */
+.fp-row{display:flex;align-items:center;gap:10px;margin-top:8px}
+.fp-box{flex:1;border:1.5px solid var(--box-b);border-radius:8px;padding:10px 6px;background:#fff;
+  text-align:center;position:relative;transition:box-shadow .2s, border-color .2s}
+.fp-box.lit{border-color:var(--red);box-shadow:0 0 0 2px var(--red),0 0 14px rgba(220,38,38,.35)}
+.fp-box .lbl{font-size:12px;color:var(--navy);font-weight:700}
+.fp-box .meta{font-size:10.5px;color:#64748b;margin-top:2px}
+.fp-box canvas{display:block;margin:6px auto 0;background:#0f172a;border-radius:4px}
+.fp-arrow{flex:0 0 18px;height:2px;background:#cbd5e1;position:relative}
+.fp-arrow::after{content:"";position:absolute;right:-4px;top:-3px;width:0;height:0;
+  border-left:6px solid #cbd5e1;border-top:4px solid transparent;border-bottom:4px solid transparent}
+.fp-bar{height:14px;background:#e2e8f0;border-radius:7px;overflow:hidden;margin-top:6px}
+.fp-bar > span{display:block;height:100%;background:var(--red);width:0%;transition:width .3s}
+/* Confusion-matrix demo (slide 10) */
+.cm{display:grid;grid-template-columns:auto 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:6px;
+  margin-top:6px;font-size:12.5px}
+.cm .lbl{color:var(--navy);font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center}
+.cm .lbl.row{writing-mode:vertical-rl;transform:rotate(180deg)}
+.cm .cell{background:#EEF3FB;border:1.5px solid var(--box-b);border-radius:8px;padding:8px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:54px}
+.cm .cell.tp{background:#dcfce7;border-color:var(--green)}
+.cm .cell.tn{background:#dcfce7;border-color:var(--green)}
+.cm .cell.fp{background:var(--red-soft);border-color:var(--red)}
+.cm .cell.fn{background:var(--red-soft);border-color:var(--red)}
+.cm .cell .n{font-size:22px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.cm .cell .k{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+/* Big metric */
+.bigmetric{background:#fff;border:1.5px solid var(--box-b);border-radius:12px;padding:14px;text-align:center;position:relative}
+.bigmetric.win{border-color:var(--green);background:#f0fdf4}
+.bigmetric .v{font-size:34px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1}
+.bigmetric .v.green{color:var(--green)}
+.bigmetric .v.red{color:var(--red)}
+.bigmetric .k{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-top:6px;font-weight:600}
+.bigmetric .crown{position:absolute;top:-10px;right:10px;background:var(--green);color:#fff;
+  font-size:10px;font-weight:800;padding:3px 8px;border-radius:999px;letter-spacing:.4px}
+/* Reveal demo */
+.reveal-pane{position:relative;display:inline-block;width:100%}
+.reveal-pane canvas{width:100%;height:auto;display:block;border-radius:8px;background:#000}
+.reveal-pane .lab{position:absolute;top:6px;left:6px;background:rgba(15,23,42,.78);color:#fff;
+  font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
+/* HUD */
+.hud{position:fixed;bottom:18px;right:24px;display:flex;gap:8px;align-items:center;
+  background:rgba(11,16,32,.75);padding:6px 10px;border-radius:999px;color:#cbd5e1;font-size:12px;
+  z-index:50;transition:opacity .35s}
+.hud.idle{opacity:0;pointer-events:none}
+.hud button{background:#1e293b;color:#cbd5e1;border:1px solid #334155;padding:4px 10px;border-radius:999px;
+  font-size:11px;font-weight:700;cursor:pointer}
+.hud button:hover{background:#334155;color:#fff}
+.hud .counter{font-variant-numeric:tabular-nums;color:#fff;font-weight:700;min-width:48px;text-align:center}
+.hint{position:fixed;bottom:18px;left:24px;color:#64748b;font-size:11px;z-index:50;transition:opacity .35s}
+.hint.idle{opacity:0;pointer-events:none}
+.hint b{color:#cbd5e1;background:#1e293b;border:1px solid #334155;padding:1px 6px;border-radius:4px;font-family:"SF Mono",Monaco,monospace;font-size:10px;font-weight:700}
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--red);width:0%;transition:width .3s;z-index:60}
+/* Overview */
+.ov{position:fixed;inset:0;background:rgba(5,6,15,.92);display:none;z-index:100;padding:40px;
+  flex-direction:column;align-items:center;justify-content:center}
+.ov.show{display:flex}
+.ov h2{color:#fff;margin:0 0 18px;font-size:18px;letter-spacing:.4px;text-transform:uppercase}
+.ov-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:min(900px,90vw)}
+.ov-card{background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:14px 14px;cursor:pointer;
+  display:flex;flex-direction:column;justify-content:space-between;min-height:90px;transition:.18s}
+.ov-card:hover{border-color:#fff}
+.ov-card.is{border-color:var(--red);background:#312e81}
+.ov-card .mini{color:#f1f5f9;font-size:13px;font-weight:600;line-height:1.3}
+.ov-card .tag{align-self:flex-end;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;border:none}
+/* Notes */
+.notes{position:fixed;bottom:60px;left:24px;right:24px;max-width:760px;margin:0 auto;
+  background:rgba(15,23,42,.92);color:#f1f5f9;padding:14px 18px;border-radius:10px;
+  font-size:14px;line-height:1.5;display:none;z-index:90;border:1px solid #334155}
+.notes.show{display:block}
+.notes b{color:var(--red);font-size:11px;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:4px}
+/* Responsive shrink */
+@container (max-width: 900px){
+  .slide h1.main{font-size:32px}
+  .card p{font-size:12.5px}
+}
 </style>
 </head>
 <body>
+<div class="progress" id="progress"></div>
+<div class="hint" id="hint">← → navigate · <b>O</b> overview · <b>N</b> notes · <b>F</b> fullscreen</div>
+<div class="stage" id="stage">
 
-<!-- 1. Title -->
-<section class="slide active">
-  <h1>Malaria RBC Classification</h1>
-  <p class="subtitle">Deep learning for automated diagnosis of blood samples</p>
-  <div class="grid-3" style="margin-top: 2rem;">
-    <div class="card">
-      <h3>Course</h3>
-      <p>UCS321 — AI for Engineers</p>
-      <p>EST Project</p>
-    </div>
-    <div class="card yellow">
-      <h3>Statement</h3>
-      <p>#4 — Biocon Ltd.</p>
-      <p>Advanced CNN + Grad-CAM</p>
-    </div>
-    <div class="card green">
-      <h3>Author</h3>
-      <p>Arun AK</p>
-      <p>B.E. CSE, Thapar University</p>
-    </div>
+<!-- =================== SLIDE 1: TITLE =================== -->
+<section class="slide active" data-n="1" data-notes="Hi, I'm Arun AK. This is my UCS321 EST project — Statement #4 from Biocon Ltd. The brief asks for an advanced CNN that classifies red blood cells as healthy or malaria-infected, with interpretability for medical experts. I built it end-to-end and pushed it to GitHub. Let me walk you through.">
+  <div class="red-topbar"></div>
+  <div style="margin-top:14px;display:flex;justify-content:center"><span class="id-badge">UCS321 · EST PROJECT · STATEMENT #4</span></div>
+  <div class="title-pill big" style="margin-top:18px">Malaria RBC Classification</div>
+  <h2 class="sub" style="text-align:center;margin-top:10px;color:#475569;font-weight:600;font-size:18px">An advanced CNN with Grad-CAM interpretability</h2>
+  <div class="title-author">
+    <div class="name">Arun AK</div>
+    <div class="meta">Roll 1024170121 · 2nd Year CSE</div>
+    <div class="meta sm">Thapar Institute of Engineering & Technology, Patiala</div>
+    <div class="guide">Course: AI for Engineers (UCS321)</div>
   </div>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>1</span></div>
 </section>
 
-<!-- 2. Problem Statement -->
-<section class="slide">
-  <h2>The Problem</h2>
-  <div class="card yellow" style="margin-bottom: 2rem;">
-    <p style="font-style: italic;">
-      "Biocon Ltd. is working on automated diagnosis of blood samples. Develop an
-      advanced CNN model to classify red blood cell images as healthy or
-      malaria-infected, addressing class imbalance, image noise, and variability,
-      while incorporating model interpretability (e.g., Grad-CAM) to assist medical
-      experts in validating predictions."
-    </p>
+<!-- =================== SLIDE 2: ROADMAP =================== -->
+<section class="slide" data-n="2" data-notes="Six pieces. Most time on problem, augmentation demo, and results. Forward-pass and Grad-CAM are the two demos that show what the model actually learned.">
+  <div class="red-topbar"></div>
+  <div class="title-pill">Roadmap</div>
+  <div class="outline-grid">
+    <div class="outline-item"><div class="badge-circle red">1</div><div><h3>Problem &amp; Brief</h3><p>What Biocon asked for, what's hard about it</p></div></div>
+    <div class="outline-item"><div class="badge-circle blue">2</div><div><h3>Dataset &amp; Splits</h3><p>NIH Malaria Cell Images, 27,558 RBCs</p></div></div>
+    <div class="outline-item"><div class="badge-circle red">3</div><div><h3>Augmentation — live</h3><p>Addresses noise + variability requirement</p></div></div>
+    <div class="outline-item"><div class="badge-circle blue">4</div><div><h3>Pipeline &amp; Models</h3><p>Two architectures · transfer learning</p></div></div>
+    <div class="outline-item"><div class="badge-circle red">5</div><div><h3>Results &amp; Demos</h3><p>Threshold slider · Grad-CAM reveal</p></div></div>
+    <div class="outline-item"><div class="badge-circle blue">6</div><div><h3>Reflections</h3><p>What surprised me · what's next</p></div></div>
   </div>
-  <h3>Key requirements</h3>
-  <div class="grid-2">
-    <ul>
-      <li><span class="tag">CNN</span> Build an advanced CNN model</li>
-      <li><span class="tag">Imbalance</span> Address class imbalance</li>
-      <li><span class="tag">Noise</span> Handle image noise</li>
-    </ul>
-    <ul>
-      <li><span class="tag">Variability</span> Handle visual variability</li>
-      <li><span class="tag">Grad-CAM</span> Interpretability for medical experts</li>
-      <li><span class="tag">Flow</span> Mandatory flow diagram</li>
-    </ul>
-  </div>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>2</span></div>
 </section>
 
-<!-- 3. Dataset -->
-<section class="slide">
-  <h2>Dataset — NIH Malaria Cell Images</h2>
-  <div class="grid-3">
-    <div class="metric"><span class="value">27,558</span><div class="label">Total RBC images</div></div>
-    <div class="metric"><span class="value">50 / 50</span><div class="label">Parasitized / Uninfected</div></div>
-    <div class="metric"><span class="value">PNG · RGB</span><div class="label">Variable resolution</div></div>
+<!-- =================== SLIDE 3: PROBLEM =================== -->
+<section class="slide" data-n="3" data-notes="The brief — read verbatim. The five tags below it are what the project must demonstrate. Class imbalance is interesting because the dataset is actually balanced 50/50, so I addressed it via stratified split + per-class metrics rather than weighted loss.">
+  <div class="red-topbar"></div>
+  <div class="title-pill">The Problem &nbsp;·&nbsp; Statement #4 (Biocon Ltd.)</div>
+  <div class="callout" style="margin-top:14px;font-size:14px;line-height:1.55">
+    <b>Brief.</b> Develop an <i>advanced CNN model</i> to classify red blood cell images as healthy or malaria-infected — addressing <b>class imbalance</b>, <b>image noise</b>, and <b>variability</b> — while incorporating <b>Grad-CAM</b> interpretability to assist medical experts in validating predictions.
   </div>
-  <h3 style="margin-top: 2rem;">Splits (stratified 70 / 15 / 15)</h3>
-  <table>
-    <tr><th>Split</th><th>Total</th><th>Uninfected</th><th>Parasitized</th></tr>
-    <tr><td>Train</td><td>19,290</td><td>9,645</td><td>9,645</td></tr>
-    <tr><td>Validation</td><td>4,133</td><td>2,066</td><td>2,067</td></tr>
-    <tr><td>Test</td><td>4,135</td><td>2,068</td><td>2,067</td></tr>
+  <div style="margin-top:14px;color:var(--navy);font-weight:700;font-size:15px">The five must-haves:</div>
+  <div class="grid c4" style="margin-top:8px">
+    <div class="card red-top center"><h3>Advanced CNN</h3><p><i>Beyond a toy 2-conv model</i></p></div>
+    <div class="card red-top center"><h3>Class imbalance</h3><p><i>Stratified split + per-class metrics</i></p></div>
+    <div class="card red-top center"><h3>Image noise</h3><p><i>Gaussian noise augmentation</i></p></div>
+    <div class="card red-top center"><h3>Variability</h3><p><i>Flip · rotate · brightness · contrast</i></p></div>
+  </div>
+  <div class="infobox" style="margin-top:12px;text-align:center"><b style="color:var(--red)">+ Grad-CAM interpretability</b> &nbsp;·&nbsp; <b style="color:var(--navy)">+ Mandatory flow diagram</b> &nbsp;(per project brief, page 2)</div>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>3</span></div>
+</section>
+
+<!-- =================== SLIDE 4: DATASET =================== -->
+<section class="slide" data-n="4" data-notes="NIH Malaria Cell Images — the standard benchmark. 27,558 segmented RBC images, exactly 50/50 balanced. I used a 70/15/15 stratified split — train, val, test — with a fixed seed for reproducibility. Image sizes vary, so I resize everything to 128×128 RGB.">
+  <div class="red-topbar"></div>
+  <div class="title-pill">Dataset &nbsp;·&nbsp; NIH Malaria Cell Images</div>
+  <div class="grid c3" style="margin-top:14px">
+    <div class="bigmetric"><div class="v">27,558</div><div class="k">Total RBC images</div></div>
+    <div class="bigmetric"><div class="v">50 / 50</div><div class="k">Parasitized · Uninfected</div></div>
+    <div class="bigmetric"><div class="v">128 px</div><div class="k">Resized · RGB · float32</div></div>
+  </div>
+  <div style="margin-top:14px;color:var(--navy);font-weight:700;font-size:14px">Splits — stratified 70 / 15 / 15 (seed = 42):</div>
+  <table class="crit" style="margin-top:6px">
+    <tr><td class="num">T</td><td class="name">Train</td><td class="desc"><b style="color:var(--ink)">19,290</b> &nbsp;·&nbsp; 9,645 Uninfected · 9,645 Parasitized</td></tr>
+    <tr><td class="num">V</td><td class="name">Validation</td><td class="desc"><b style="color:var(--ink)">4,133</b> &nbsp;·&nbsp; 2,066 Uninfected · 2,067 Parasitized</td></tr>
+    <tr><td class="num">★</td><td class="name">Test (held-out)</td><td class="desc"><b style="color:var(--ink)">4,135</b> &nbsp;·&nbsp; 2,068 Uninfected · 2,067 Parasitized</td></tr>
   </table>
+  <div class="callout" style="margin-top:10px;font-size:13px"><b>Why this dataset?</b> NIH segmented thin-smear images, openly licensed on Kaggle. Standard benchmark — modern CNNs reach ≥95% on it.</div>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>4</span></div>
 </section>
 
-<!-- 4. Pipeline -->
-<section class="slide">
-  <h2>Pipeline</h2>
-  <div class="flow">
-    <div class="flow-step">📁 NIH Malaria Cell Images — 27,558 RBC images</div>
-    <div class="arrow">↓</div>
-    <div class="flow-step">🔧 Pre-processing — resize 128×128, normalize, stratified split</div>
-    <div class="arrow">↓</div>
-    <div class="flow-step">🎲 Augmentation — flip · rotation · brightness · contrast · noise</div>
-    <div class="arrow">↓</div>
-    <div class="flow-step model">🧠 Models — Baseline CNN + ResNet50 transfer learning</div>
-    <div class="arrow">↓</div>
-    <div class="flow-step model">🏋️ Training — Adam + EarlyStopping + ModelCheckpoint</div>
-    <div class="arrow">↓</div>
-    <div class="flow-step eval">📊 Evaluation — Accuracy · F1 · AUC · Confusion matrix</div>
-    <div class="arrow">↓</div>
-    <div class="flow-step eval">🔍 Grad-CAM Interpretability + 🩺 Streamlit Dashboard</div>
+<!-- =================== SLIDE 5: AUGMENTATION DEMO =================== -->
+<section class="slide" data-n="5" data-notes="Live augmentation playground. The brief asks for noise and variability handling — this is exactly that. Drag the sliders to see what the training pipeline does to every image at every step. The model sees 12 epochs of these distorted views, never the same image twice.">
+  <div class="red-topbar"></div>
+  <div class="title-pill">Augmentation pipeline &nbsp;·&nbsp; live demo</div>
+  <div class="grid c2" style="margin-top:12px;gap:14px;align-items:start">
+    <div class="demo">
+      <div class="demo-title">Sample RBC — manipulate live</div>
+      <div class="controls">
+        <label>Rotation <input type="range" id="augRot" min="-30" max="30" step="1" value="0"><span class="readout" id="augRotR">0°</span></label>
+        <label>Brightness <input type="range" id="augBri" min="0.7" max="1.3" step="0.01" value="1.0"><span class="readout" id="augBriR">1.00</span></label>
+      </div>
+      <div class="controls">
+        <label>Contrast <input type="range" id="augCon" min="0.7" max="1.3" step="0.01" value="1.0"><span class="readout" id="augConR">1.00</span></label>
+        <label>Noise σ <input type="range" id="augNoi" min="0" max="0.05" step="0.001" value="0.000"><span class="readout" id="augNoiR">0.000</span></label>
+      </div>
+      <div class="controls">
+        <button class="btn red" id="augShuffle">▶ Random</button>
+        <button class="btn" id="augReset">Reset</button>
+        <button class="btn" id="augFlip">Flip H</button>
+      </div>
+      <canvas id="augC" class="demoC" width="520" height="280"></canvas>
+      <div class="cap">Left: original 96×96 RBC sample. Right: augmented copy fed to the model. Every training image passes through this pipeline.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card blue-top">
+        <h3>What this addresses</h3>
+        <p style="line-height:1.55"><b style="color:var(--navy)">Noise</b> · Gaussian σ injects sensor noise.<br/><b style="color:var(--navy)">Variability</b> · flips + rotation simulate cell orientation; brightness + contrast handle stain/lighting drift.</p>
+      </div>
+      <div class="callout" style="font-size:13px">
+        <b>Why it matters.</b> Real microscopy varies wildly across labs. A model trained on one stain protocol fails on the next unless you bake variability into training.
+      </div>
+      <div class="tag-row">
+        <span class="tag">Horizontal flip</span>
+        <span class="tag">Vertical flip</span>
+        <span class="tag">Rotation ±20°</span>
+        <span class="tag">Brightness ±15%</span>
+        <span class="tag">Contrast ±15%</span>
+        <span class="tag red">Gaussian noise</span>
+      </div>
+    </div>
   </div>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>5</span></div>
 </section>
 
-<!-- 5. Models -->
-<section class="slide">
-  <h2>Two Architectures Compared</h2>
-  <div class="grid-2">
-    <div class="card yellow">
-      <h3>Baseline CNN</h3>
-      <p><b>~100K parameters</b></p>
-      <ul>
-        <li>3 × (Conv2D 3×3 + BatchNorm + MaxPool)</li>
-        <li>32 → 64 → 128 filters</li>
-        <li>GlobalAveragePooling2D</li>
-        <li>Dense 64 → Dropout → Sigmoid</li>
-      </ul>
-      <p style="margin-top: 1rem;"><span class="tag">Fast</span> trains in minutes on CPU</p>
+<!-- =================== SLIDE 6: PIPELINE =================== -->
+<section class="slide" data-n="6" data-notes="Five stages. Click 'Run' to highlight each stage in sequence — that's roughly what runs every time I do `python src/train.py`. Code is modular, each stage is one file in src/.">
+  <div class="red-topbar"></div>
+  <div class="title-pill">End-to-end pipeline</div>
+  <div class="pipe" id="pipeRow">
+    <div class="pnode" data-i="0"><div class="tit">📁 Data</div><div class="sub">NIH 27,558 RBC images · Kaggle</div><div class="arrow">▶</div></div>
+    <div class="pnode" data-i="1"><div class="tit">🔧 Pre-process</div><div class="sub">Resize 128² · normalize · 70/15/15 split</div><div class="arrow">▶</div></div>
+    <div class="pnode" data-i="2"><div class="tit">🎲 Augment</div><div class="sub">Flip · rotate · noise · contrast</div><div class="arrow">▶</div></div>
+    <div class="pnode" data-i="3"><div class="tit">🏋️ Train</div><div class="sub">Adam · BCE · EarlyStopping</div><div class="arrow">▶</div></div>
+    <div class="pnode" data-i="4"><div class="tit">📊 Evaluate</div><div class="sub">ROC · PR · Grad-CAM</div></div>
+  </div>
+  <div class="grid c3" style="margin-top:18px">
+    <div class="card">
+      <h3>Reproducible</h3>
+      <p>Every stage is a runnable script in <b>src/</b>. Same seed, same hyperparams, same results.</p>
     </div>
     <div class="card">
-      <h3>ResNet50 Transfer</h3>
-      <p><b>~24M parameters</b></p>
-      <ul>
-        <li>ResNet50 base (ImageNet weights, frozen)</li>
-        <li>GlobalAveragePooling2D</li>
-        <li>Dense 128 → Dropout → Sigmoid</li>
-        <li>Two-stage: frozen → fine-tune top block</li>
-      </ul>
-      <p style="margin-top: 1rem;"><span class="tag">Accurate</span> ImageNet inductive bias</p>
+      <h3>Trained on Colab T4</h3>
+      <p>~45 min total — baseline CNN ~12 min, ResNet50 frozen 16 min + fine-tune 15 min.</p>
+    </div>
+    <div class="card">
+      <h3>Configured in YAML</h3>
+      <p>All hyperparams in <b>config/config.yaml</b>. Change one line, retrain.</p>
     </div>
   </div>
+  <div style="margin-top:12px;text-align:center"><button class="btn" id="pipeRun" style="background:var(--red);color:#fff;border:none;border-radius:6px;padding:6px 18px;font-weight:700;font-size:13px;cursor:pointer">▶ Run pipeline</button></div>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>6</span></div>
 </section>
 
-<!-- 6. Augmentation -->
-<section class="slide">
-  <h2>Addressing Noise & Variability</h2>
-  <p>Augmentation directly maps to the brief's requirements:</p>
-  <table>
-    <tr><th>Brief requirement</th><th>Implementation</th></tr>
-    <tr><td>Image noise</td><td>Gaussian noise injection (σ = 0.02)</td></tr>
-    <tr><td>Variability — orientation</td><td>Random horizontal & vertical flips</td></tr>
-    <tr><td>Variability — staining/lighting</td><td>Random brightness & contrast (±15%)</td></tr>
-    <tr><td>Variability — perspective</td><td>Random zoom & rotation (±20°)</td></tr>
-    <tr><td>Class imbalance</td><td>Stratified split + class-weighted loss capability</td></tr>
-  </table>
+<!-- =================== SLIDE 7: TWO MODELS =================== -->
+<section class="slide" data-n="7" data-notes="Two architectures. Baseline CNN — small, custom, 100K params. ResNet50 — pretrained on ImageNet, 24 million params, two-stage training. I compared them head-to-head. Spoiler: the small one won.">
+  <div class="red-topbar"></div>
+  <div class="title-pill">Two architectures &nbsp;·&nbsp; head to head</div>
+  <div class="grid c2" style="margin-top:14px;gap:18px">
+    <div class="card blue-top">
+      <h3>Baseline CNN — built from scratch</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px"><span class="pill-blue">~100K params</span><span class="tag">Trains in 12 min</span></div>
+      <table class="crit" style="margin-top:0;font-size:12.5px">
+        <tr><td class="num">1</td><td class="name">Block 1</td><td class="desc">Conv 32 → BN → MaxPool</td></tr>
+        <tr><td class="num">2</td><td class="name">Block 2</td><td class="desc">Conv 64 → BN → MaxPool</td></tr>
+        <tr><td class="num">3</td><td class="name">Block 3</td><td class="desc">Conv 128 → BN → MaxPool</td></tr>
+        <tr><td class="num">4</td><td class="name">Head</td><td class="desc">GAP → Dropout → Dense 64 → Sigmoid</td></tr>
+      </table>
+    </div>
+    <div class="card red-top">
+      <h3>ResNet50 — transfer learning</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px"><span class="pill-red">~24M params</span><span class="tag">Trains in 31 min</span></div>
+      <table class="crit" style="margin-top:0;font-size:12.5px">
+        <tr><td class="num">1</td><td class="name">Base</td><td class="desc">ResNet50 · ImageNet weights</td></tr>
+        <tr><td class="num">2</td><td class="name">Stage 1</td><td class="desc">Frozen base · train head only</td></tr>
+        <tr><td class="num">3</td><td class="name">Stage 2</td><td class="desc">Unfreeze last block · fine-tune at 1e-5</td></tr>
+        <tr><td class="num">4</td><td class="name">Head</td><td class="desc">GAP → Dropout → Dense 128 → Sigmoid</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:12px;font-size:13px"><b>Both share the same loss + callbacks.</b> Adam optimizer · binary cross-entropy · EarlyStopping on val_AUC · ReduceLROnPlateau · ModelCheckpoint.</div>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>7</span></div>
 </section>
 
-<!-- 7. Results -->
-<section class="slide">
-  <h2>Results</h2>
-  <p class="subtitle">Test set: 4,135 held-out RBC images · trained on Colab T4 GPU</p>
-  <table>
-    <tr><th>Model</th><th>Accuracy</th><th>F1</th><th>ROC-AUC</th><th>PR-AUC</th></tr>
-    <tr style="background: rgba(45, 212, 191, 0.08);">
-      <td><b>Baseline CNN</b> ⭐</td>
-      <td><b>95.50%</b></td>
-      <td><b>0.9550</b></td>
-      <td><b>0.9883</b></td>
-      <td><b>0.9888</b></td>
+<!-- =================== SLIDE 8: FORWARD PASS DEMO =================== -->
+<section class="slide" data-n="8" data-notes="What does a CNN actually do? An RBC image enters left, passes through three convolutional blocks — each one extracts more abstract patterns — then global average pooling collapses it to a single vector, and the sigmoid spits out a probability. Click Forward to watch one image flow through.">
+  <div class="red-topbar"></div>
+  <div class="title-pill">How a CNN sees a cell &nbsp;·&nbsp; live forward pass</div>
+  <div class="demo" style="margin-top:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <div class="demo-title">Baseline CNN — input → 3 conv blocks → GAP → sigmoid</div>
+      <div class="controls">
+        <button class="btn red" id="fpRun">▶ Forward pass</button>
+        <button class="btn" id="fpSwap">Swap sample</button>
+      </div>
+    </div>
+    <div class="fp-row" id="fpRow">
+      <div class="fp-box" data-i="0"><div class="lbl">Input</div><canvas width="64" height="64"></canvas><div class="meta">128×128 RGB</div></div>
+      <div class="fp-arrow"></div>
+      <div class="fp-box" data-i="1"><div class="lbl">Conv 1</div><canvas width="64" height="64"></canvas><div class="meta">32 filters · 3×3</div></div>
+      <div class="fp-arrow"></div>
+      <div class="fp-box" data-i="2"><div class="lbl">Conv 2</div><canvas width="64" height="64"></canvas><div class="meta">64 filters · 3×3</div></div>
+      <div class="fp-arrow"></div>
+      <div class="fp-box" data-i="3"><div class="lbl">Conv 3</div><canvas width="64" height="64"></canvas><div class="meta">128 filters · 3×3</div></div>
+      <div class="fp-arrow"></div>
+      <div class="fp-box" data-i="4"><div class="lbl">Output</div><canvas width="64" height="64"></canvas><div class="meta" id="fpVerdict">awaiting…</div></div>
+    </div>
+    <div class="fp-bar"><span id="fpProb"></span></div>
+    <div class="cap" style="margin-top:6px"><b style="color:var(--navy)">P(parasitized)</b> shown above. The animation is symbolic — feature maps are illustrative, not the actual learned filters.</div>
+  </div>
+  <div class="grid c3" style="margin-top:12px">
+    <div class="card center"><h3 style="font-size:14px">Convolutions</h3><p style="font-size:12.5px">Learn local patterns: edges, shapes, parasite blobs</p></div>
+    <div class="card center"><h3 style="font-size:14px">Pooling</h3><p style="font-size:12.5px">Compress spatially, keep what matters</p></div>
+    <div class="card center"><h3 style="font-size:14px">Sigmoid</h3><p style="font-size:12.5px">Squash to a probability between 0 and 1</p></div>
+  </div>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>8</span></div>
+</section>
+
+<!-- =================== SLIDE 9: RESULTS =================== -->
+<section class="slide" data-n="9" data-notes="The headline numbers. Both models clear 94% on the test set. The surprise: the 100K-param baseline CNN beat ResNet50 transfer learning by about a point on every metric. ResNet50's ImageNet inductive bias is far from microscopy — the small custom CNN learns task-specific features without the baggage.">
+  <div class="red-topbar"></div>
+  <div class="title-pill">Results &nbsp;·&nbsp; held-out test set (4,135 images)</div>
+  <div class="grid c4" style="margin-top:14px">
+    <div class="bigmetric win"><div class="crown">★ BEST</div><div class="v green">95.50%</div><div class="k">Test accuracy</div></div>
+    <div class="bigmetric"><div class="v">0.9883</div><div class="k">ROC-AUC</div></div>
+    <div class="bigmetric"><div class="v">0.9888</div><div class="k">PR-AUC</div></div>
+    <div class="bigmetric"><div class="v">0.9550</div><div class="k">F1 (weighted)</div></div>
+  </div>
+  <table class="crit" style="margin-top:14px;font-size:13px">
+    <tr style="background:#dcfce7 !important">
+      <td class="num" style="color:var(--green)">★</td>
+      <td class="name" style="color:var(--green)">Baseline CNN</td>
+      <td class="desc"><b>95.50%</b> acc · F1 0.9550 · ROC-AUC 0.9883 · PR-AUC 0.9888</td>
     </tr>
     <tr>
-      <td>ResNet50 Transfer</td>
-      <td>94.53%</td>
-      <td>0.9453</td>
-      <td>0.9871</td>
-      <td>0.9876</td>
+      <td class="num"></td>
+      <td class="name">ResNet50 Transfer</td>
+      <td class="desc">94.53% acc · F1 0.9453 · ROC-AUC 0.9871 · PR-AUC 0.9876</td>
     </tr>
   </table>
-  <div class="grid-2" style="margin-top: 1.5rem;">
-    <div class="card green">
-      <h3>Best model: Baseline CNN</h3>
-      <p>The small custom CNN (~100K params) beat ResNet50 (~24M params) by ~1 point on every metric.</p>
-    </div>
-    <div class="card yellow">
-      <h3>Why?</h3>
-      <p>ResNet50's ImageNet inductive bias is far from microscopy stain distributions; the lightweight CNN learns task-specific features without the baggage.</p>
-    </div>
-  </div>
+  <div class="callout" style="margin-top:12px;font-size:13px"><b>Surprise.</b> The 100K-param custom CNN beat ResNet50 (24M params) by ~1 point on every metric. ImageNet's inductive bias is far from microscopy stains — task-specific features beat transfer here.</div>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>9</span></div>
 </section>
 
-<!-- 7b. Confusion -->
-<section class="slide">
-  <h2>Confusion Matrix — Best Model</h2>
-  <p class="subtitle">Baseline CNN on the 4,135-image test set</p>
-  <div class="grid-2" style="margin-top: 1rem;">
-    <table>
-      <tr><th></th><th>Pred: Uninfected</th><th>Pred: Parasitized</th></tr>
-      <tr><th>Actual: Uninfected</th><td style="color: var(--green); font-weight: bold;">1,995 ✓</td><td style="color: var(--red);">73</td></tr>
-      <tr><th>Actual: Parasitized</th><td style="color: var(--red);">113</td><td style="color: var(--green); font-weight: bold;">1,954 ✓</td></tr>
-    </table>
-    <div>
-      <div class="metric" style="margin-bottom: 0.8rem;"><span class="value">3,949</span><div class="label">Correct predictions (95.5%)</div></div>
-      <div class="metric"><span class="value">186</span><div class="label">Errors — 73 FP + 113 FN</div></div>
+<!-- =================== SLIDE 10: THRESHOLD SLIDER DEMO =================== -->
+<section class="slide" data-n="10" data-notes="Where do you set the decision threshold? At 0.5, the confusion matrix is what you saw on the previous slide. But for medical screening you want to minimise false negatives — drag the slider down and watch FN drop while FP grows. The ROC curve dot tracks your choice.">
+  <div class="red-topbar"></div>
+  <div class="title-pill">Threshold slider &nbsp;·&nbsp; live confusion matrix</div>
+  <div class="grid c2" style="margin-top:12px;gap:14px;align-items:start">
+    <div class="demo">
+      <div class="demo-title">Drag threshold · counts update live</div>
+      <div class="controls">
+        <label>Threshold <input type="range" id="thrSlider" min="0.02" max="0.98" step="0.01" value="0.50"><span class="readout" id="thrR">0.50</span></label>
+        <button class="btn" id="thrReset">Reset 0.5</button>
+      </div>
+      <div class="cm" id="cm">
+        <div></div>
+        <div class="lbl">Pred · Uninfected</div>
+        <div class="lbl">Pred · Parasitized</div>
+        <div class="lbl row">Actual · Uninfected</div>
+        <div class="cell tn"><div class="n" id="cmTN">—</div><div class="k">True Negative</div></div>
+        <div class="cell fp"><div class="n" id="cmFP">—</div><div class="k">False Positive</div></div>
+        <div class="lbl row">Actual · Parasitized</div>
+        <div class="cell fn"><div class="n" id="cmFN">—</div><div class="k">False Negative</div></div>
+        <div class="cell tp"><div class="n" id="cmTP">—</div><div class="k">True Positive</div></div>
+      </div>
+      <div class="cap" id="cmCap">Counts scaled from synthesized predictions matching real test confusion matrix.</div>
+    </div>
+    <div class="demo">
+      <div class="demo-title">ROC curve · cursor tracks threshold</div>
+      <canvas id="rocC" class="demoC" width="520" height="320"></canvas>
+      <div class="cap"><b style="color:var(--red)">Red dot</b> = current threshold's (FPR, TPR). <b>Diagonal</b> = chance baseline. Curve area = 0.988.</div>
     </div>
   </div>
-  <p style="margin-top: 1rem; color: var(--muted);">
-    Per-class F1: Uninfected 0.9555 · Parasitized 0.9546 — model is well-balanced across both classes.
-  </p>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>10</span></div>
 </section>
 
-<!-- 8. Grad-CAM -->
-<section class="slide">
-  <h2>Grad-CAM — Why the model decides</h2>
-  <div class="grid-2">
-    <div>
-      <h3>What it does</h3>
-      <p>Highlights which pixels contributed most to the prediction. For Parasitized samples, the model should focus on parasite-shaped artifacts inside the cell.</p>
-      <h3 style="margin-top: 1.5rem;">Why it matters</h3>
-      <p>Medical experts cannot trust a black box. Grad-CAM gives them a visual hand-off — "the model saw this region; here's why."</p>
+<!-- =================== SLIDE 11: GRAD-CAM DEMO =================== -->
+<section class="slide" data-n="11" data-notes="Grad-CAM answers 'why did the model say parasitized?' Drag each slider to fade between the raw cell and the heatmap overlay. Red regions are where the model focused — for parasitized cells you should see hot zones over the parasite blobs inside the cell. This is the 'medical experts validating predictions' part of the brief.">
+  <div class="red-topbar"></div>
+  <div class="title-pill">Grad-CAM &nbsp;·&nbsp; what the model actually looks at</div>
+  <div class="grid c2" style="margin-top:12px;gap:18px">
+    <div class="demo">
+      <div class="demo-title" style="color:var(--red)">⚠ Parasitized · model says parasite likely</div>
+      <div class="reveal-pane">
+        <canvas id="rev1" width="380" height="380"></canvas>
+        <div class="lab" id="rev1lab">Raw image</div>
+      </div>
+      <div class="controls" style="margin-top:8px">
+        <label style="flex:1">Reveal heatmap <input type="range" id="rev1s" min="0" max="100" step="1" value="0" style="width:100%"></label>
+      </div>
     </div>
-    <div class="card green">
-      <h3>Generated views</h3>
-      <ul>
-        <li>4×4 grid — True Positives (correct parasite calls)</li>
-        <li>4×4 grid — True Negatives (correct healthy calls)</li>
-        <li>4×4 grid — False Positives (review with experts)</li>
-        <li>4×4 grid — False Negatives (most clinically dangerous — investigate)</li>
-      </ul>
+    <div class="demo">
+      <div class="demo-title" style="color:var(--green)">✓ Uninfected · model says healthy</div>
+      <div class="reveal-pane">
+        <canvas id="rev2" width="380" height="380"></canvas>
+        <div class="lab" id="rev2lab">Raw image</div>
+      </div>
+      <div class="controls" style="margin-top:8px">
+        <label style="flex:1">Reveal heatmap <input type="range" id="rev2s" min="0" max="100" step="1" value="0" style="width:100%"></label>
+      </div>
     </div>
   </div>
+  <div class="callout" style="margin-top:12px;font-size:13px"><b>Why it matters for medicine.</b> A doctor can't trust a black box. Grad-CAM hands them a visual: "the model saw <i>this</i> region — here's why." Clinical override stays with the expert.</div>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>11</span></div>
 </section>
 
-<!-- 9. Dashboard -->
-<section class="slide">
-  <h2>Dashboard — Streamlit</h2>
-  <div class="grid-2">
-    <div>
-      <h3>Workflow</h3>
-      <ol style="padding-left: 1.5rem;">
-        <li>User uploads an RBC image (PNG/JPG)</li>
-        <li>App resizes to 128×128 and predicts</li>
-        <li>Probability + class label shown</li>
-        <li>Grad-CAM overlay reveals model focus</li>
-      </ol>
-      <p style="margin-top: 1.5rem;">
-        Run with: <code>streamlit run dashboard/app.py</code>
-      </p>
+<!-- =================== SLIDE 12: CLOSING =================== -->
+<section class="slide" data-n="12" data-notes="Three reflections. What worked, what surprised, what's next. Open to questions — common ones: why ResNet50 lost, why no class-weighted loss, threshold choice for screening, generalisation to other microscopy datasets.">
+  <div class="red-topbar"></div>
+  <div class="title-pill">Reflections &nbsp;&amp;&nbsp; thanks</div>
+  <div class="grid c3" style="margin-top:14px;gap:14px">
+    <div class="card green-top">
+      <h3 style="color:var(--green)">✓ What worked</h3>
+      <p style="line-height:1.55">95.5% test accuracy with a tiny custom CNN. End-to-end reproducible pipeline — config + scripts + Colab notebook. Grad-CAM grids satisfy the interpretability brief.</p>
     </div>
-    <div class="card">
-      <h3>Sidebar surfaces</h3>
-      <ul>
-        <li>Best model (auto-picked by test AUC)</li>
-        <li>Test accuracy & AUC</li>
-        <li>Per-model comparison table</li>
-      </ul>
+    <div class="card red-top">
+      <h3>⚡ What surprised</h3>
+      <p style="line-height:1.55">A 100K-param baseline beat ResNet50 (24M params) head-to-head. ImageNet bias hurts when target images are far from natural-scene photos.</p>
+    </div>
+    <div class="card blue-top">
+      <h3>→ What's next</h3>
+      <p style="line-height:1.55">Whole-slide rather than per-cell. Calibration for clinical thresholds. Test-time augmentation for confidence intervals.</p>
     </div>
   </div>
-</section>
-
-<!-- 10. Closing -->
-<section class="slide">
-  <h2>Summary</h2>
-  <div class="grid-3">
-    <div class="card yellow">
-      <h3>What was built</h3>
-      <p>End-to-end CNN pipeline with two architectures, Grad-CAM, dashboard, and presentation</p>
-    </div>
-    <div class="card">
-      <h3>Brief satisfied</h3>
-      <p>Advanced CNN ✓ · Imbalance ✓ · Noise ✓ · Variability ✓ · Grad-CAM ✓ · Flow diagram ✓</p>
-    </div>
-    <div class="card green">
-      <h3>Reproducible</h3>
-      <p>One Colab notebook trains everything; one Streamlit app demos it</p>
-    </div>
+  <div class="infobox" style="margin-top:14px;text-align:center;font-size:13.5px">
+    <b style="color:var(--navy)">Code &amp; full report:</b> &nbsp; <span style="font-family:'SF Mono',Monaco,monospace;color:var(--red)">github.com/Arun07AK/UCS321-Malaria-Detection</span>
+    <br/><span style="color:#64748b;font-size:12px;margin-top:4px;display:inline-block">Single-command Colab notebook · Streamlit dashboard · 13 result figures · flow diagram · presentation deck</span>
   </div>
-  <p style="margin-top: 3rem; color: var(--muted); text-align: center; font-size: 1.1rem;">
-    UCS321 EST Project · Statement #4 · Arun AK · 2026
-  </p>
+  <h2 class="sub" style="text-align:center;margin-top:18px;font-size:26px">Thank you · Questions?</h2>
+  <div class="footer"><span>08-05-2026</span><span class="mid">UCS321 EST Project · Malaria RBC Classification · Thapar University</span><span>12</span></div>
 </section>
 
-<div class="footer">UCS321 EST · Malaria RBC Classification</div>
-<div class="nav">
-  <button onclick="prevSlide()">←</button>
-  <span class="counter" id="counter">1 / 11</span>
-  <button onclick="nextSlide()">→</button>
+</div><!-- /stage -->
+
+<!-- HUD -->
+<div class="hud" id="hud">
+  <button id="prev">◀</button>
+  <span class="counter" id="counter">1 / 12</span>
+  <button id="next">▶</button>
+  <button id="ovBtn">O</button>
+  <button id="notesBtn">N</button>
+  <button id="fs">⛶</button>
 </div>
+<div class="notes" id="notes"></div>
+
+<!-- Overview -->
+<div class="ov" id="ov"><h2>Overview · jump to slide</h2><div class="ov-grid" id="ovGrid"></div></div>
+
+<!-- Embedded sample images -->
+<img id="imgPara" alt="" style="display:none" src="data:image/png;base64,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"/>
+<img id="imgUninf" alt="" style="display:none" src="data:image/png;base64,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"/>
+<img id="imgGradcam" alt="" style="display:none" src="data:image/png;base64,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"/>
 
 <script>
-  const slides = document.querySelectorAll('.slide');
-  const counter = document.getElementById('counter');
+// ============== SHARED: synthesized test predictions for slide 10 ==============
+const PREDS = [[0,0.0565],[0,0.1183],[1,0.8124],[0,0.2001],[0,0.3046],[0,0.2285],[1,0.8879],[0,0.0202],[1,0.6866],[0,0.0606],[0,0.0575],[0,0.001],[1,0.9974],[1,0.9896],[0,0.2438],[0,0.1368],[1,0.9685],[0,0.2486],[1,0.9674],[1,0.9435],[1,0.8154],[1,0.8385],[0,0.0096],[1,0.8448],[1,0.9646],[0,0.0182],[1,0.9708],[0,0.1317],[1,0.9891],[0,0.1838],[1,0.7492],[0,0.0217],[0,0.0659],[1,0.9216],[0,0.0051],[0,0.1592],[0,0.0048],[0,0.0204],[0,0.0086],[0,0.1076],[0,0.0021],[0,0.0178],[0,0.001],[0,0.0447],[1,0.8957],[1,0.9942],[0,0.1918],[1,0.6932],[1,0.877],[1,0.9163],[1,0.9916],[0,0.1811],[0,0.0843],[1,0.7567],[1,0.8833],[1,0.7062],[0,0.0209],[1,0.9985],[1,0.9299],[0,0.0085],[1,0.7934],[0,0.0024],[1,0.8896],[1,0.8765],[1,0.9531],[0,0.2626],[1,0.8299],[0,0.1702],[0,0.0296],[1,0.9027],[0,0.1796],[0,0.1419],[1,0.6755],[0,0.0294],[0,0.0213],[1,0.9522],[1,0.9636],[1,0.9545],[0,0.001],[0,0.0429],[1,0.8891],[1,0.7995],[0,0.2587],[0,0.004],[0,0.054],[0,0.0061],[1,0.865],[1,0.9929],[1,0.9667],[1,0.4163],[1,0.3224],[0,0.1211],[0,0.0266],[1,0.8206],[1,0.7002],[1,0.9375],[0,0.1208],[0,0.0134],[0,0.0012],[0,0.1453],[1,0.9766],[0,0.169],[0,0.2544],[1,0.9173],[0,0.1296],[1,0.9962],[0,0.0682],[0,0.0297],[1,0.7068],[1,0.2371],[1,0.4526],[1,0.8894],[0,0.0574],[0,0.184],[1,0.9852],[0,0.0116],[1,0.8865],[1,0.9749],[0,0.0023],[1,0.794],[1,0.9975],[0,0.0895],[0,0.0194],[1,0.6798],[0,0.0192],[1,0.9913],[1,0.8014],[1,0.8873],[0,0.0179],[0,0.1467],[1,0.9642],[1,0.9858],[0,0.0164],[1,0.9939],[1,0.7734],[1,0.9966],[1,0.9777],[0,0.0473],[1,0.9502],[1,0.8701],[1,0.9596],[0,0.1377],[1,0.9271],[0,0.1185],[0,0.0365],[0,0.0544],[0,0.0042],[1,0.7541],[0,0.4804],[1,0.8959],[1,0.9302],[0,0.1624],[0,0.0874],[1,0.9057],[1,0.9315],[0,0.2969],[0,0.0061],[0,0.1444],[0,0.3208],[0,0.1618],[0,0.0813],[0,0.1059],[0,0.0362],[1,0.9892],[1,0.4161],[1,0.9799],[0,0.1256],[0,0.0064],[0,0.1551],[1,0.7924],[0,0.368],[0,0.0908],[0,0.2975],[1,0.9794],[0,0.5497],[1,0.9737],[1,0.9669],[1,0.9549],[1,0.8753],[0,0.2164],[1,0.7991],[0,0.8679],[0,0.0322],[0,0.2474],[0,0.2432],[1,0.9838],[0,0.0355],[1,0.895],[1,0.9549],[0,0.0192],[1,0.9495],[1,0.8678],[1,0.8299],[1,0.9948],[1,0.3715],[1,0.9813],[0,0.68],[1,0.3738],[1,0.6778],[0,0.1323],[1,0.9783],[1,0.9919],[0,0.0899],[1,0.9815],[0,0.0689],[1,0.9261],[0,0.4371],[1,0.8593],[0,0.0809],[1,0.8844],[1,0.9283],[1,0.9948],[0,0.0037],[0,0.231],[1,0.8842],[1,0.9791],[1,0.9482],[1,0.2704],[1,0.9974],[0,0.0383],[1,0.9844],[0,0.0962],[0,0.0476],[1,0.9171],[1,0.8729],[1,0.8562],[0,0.0866],[0,0.0424],[1,0.744],[0,0.0765],[0,0.1224],[0,0.1871],[1,0.8366],[0,0.0079],[0,0.1915],[0,0.0102],[0,0.0781],[1,0.8348],[1,0.9002],[0,0.0664],[0,0.11],[0,0.0256],[1,0.9161],[1,0.1424],[0,0.0431],[0,0.2564],[0,0.0101],[0,0.2436],[1,0.7167],[0,0.2046],[1,0.7493],[1,0.9746],[0,0.2009],[1,0.9502],[0,0.0941],[1,0.9525],[0,0.0372],[0,0.2996],[0,0.0128],[0,0.0192],[1,0.9891],[0,0.0162],[1,0.876],[0,0.2467],[0,0.0027],[0,0.0331],[1,0.9786],[1,0.9539],[0,0.0637],[0,0.0471],[0,0.0052],[1,0.7701],[0,0.0335],[1,0.9965],[1,0.8873],[1,0.9492],[0,0.0712],[0,0.0325],[0,0.0236],[1,0.8753],[1,0.8726],[1,0.2632],[0,0.8441],[1,0.9898],[1,0.966],[0,0.5207],[1,0.9581],[0,0.0268],[1,0.9926],[0,0.0032],[1,0.9418],[0,0.1506],[0,0.0966],[1,0.9227],[0,0.1312],[1,0.999],[1,0.9515],[1,0.9636],[1,0.9855],[0,0.0162],[1,0.9523],[0,0.2841],[0,0.2189],[1,0.9227],[1,0.9562],[0,0.0282],[0,0.2789],[0,0.3996],[1,0.9958],[0,0.0079],[1,0.9255],[0,0.0907],[1,0.9989],[1,0.8219],[0,0.0497],[0,0.0682],[1,0.8264],[0,0.3226],[1,0.9003],[1,0.9914],[0,0.8391],[0,0.5743],[1,0.911],[0,0.0555],[0,0.0089],[0,0.0208],[0,0.0632],[0,0.0185],[0,0.2372],[1,0.8591],[1,0.9381],[1,0.7548],[1,0.9788],[0,0.0051],[1,0.9348],[0,0.0084],[0,0.1549],[0,0.4096],[1,0.9945],[1,0.9549],[0,0.1811],[0,0.0027],[0,0.2277],[1,0.9805],[0,0.0787],[0,0.3483],[0,0.0809],[1,0.9527],[1,0.982],[1,0.9093],[1,0.6309],[0,0.1987],[1,0.7708],[0,0.0545],[1,0.9055],[1,0.7566],[0,0.0943],[1,0.9387],[1,0.8847],[1,0.8551],[1,0.7684],[0,0.22],[1,0.8234],[1,0.8332],[1,0.9701],[1,0.7156],[1,0.9971],[1,0.9335],[1,0.8636],[1,0.9854],[0,0.0432],[1,0.9015],[1,0.9115],[0,0.0429],[0,0.2975],[0,0.0217],[1,0.9946],[0,0.108],[0,0.0283],[1,0.8975],[0,0.3445],[1,0.9036],[0,0.0227],[0,0.0622],[1,0.8316],[0,0.0142],[0,0.1826],[1,0.9944],[0,0.1467],[1,0.8705],[1,0.977],[0,0.0779],[1,0.922],[1,0.996],[1,0.622],[0,0.001],[1,0.2367],[0,0.0011],[1,0.9989],[0,0.0224]];
+
+// ============== NAV / KEYBOARD / OVERVIEW / NOTES / HUD ==============
+(() => {
+  const slides = [...document.querySelectorAll('.slide')];
+  const N = slides.length;
   let i = 0;
-  function show(n) {
-    slides[i].classList.remove('active');
-    i = (n + slides.length) % slides.length;
-    slides[i].classList.add('active');
-    counter.textContent = `${i + 1} / ${slides.length}`;
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  const notes = document.getElementById('notes');
+  let notesOn = false;
+  const ov = document.getElementById('ov');
+  const ovGrid = document.getElementById('ovGrid');
+
+  function show(n){
+    i = Math.max(0, Math.min(N-1, n));
+    slides.forEach((s,k)=>s.classList.toggle('active', k===i));
+    counter.textContent = (i+1)+' / '+N;
+    progress.style.width = (100*(i+1)/N)+'%';
+    if(notesOn) renderNotes();
+    [...ovGrid.children].forEach((c,k)=>c.classList.toggle('is',k===i));
   }
-  function nextSlide() { show(i + 1); }
-  function prevSlide() { show(i - 1); }
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
-    if (e.key === 'ArrowLeft') prevSlide();
+  function renderNotes(){
+    const n = slides[i].dataset.notes || '';
+    notes.innerHTML = '<b>Speaker note · slide '+(i+1)+'</b>'+n;
+  }
+  document.getElementById('prev').onclick=()=>show(i-1);
+  document.getElementById('next').onclick=()=>show(i+1);
+  document.getElementById('fs').onclick=()=>{
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+    else document.exitFullscreen();
+  };
+  document.getElementById('ovBtn').onclick=()=>toggleOv();
+  document.getElementById('notesBtn').onclick=()=>{
+    notesOn=!notesOn; notes.classList.toggle('show',notesOn); if(notesOn) renderNotes();
+  };
+  function toggleOv(){ ov.classList.toggle('show'); }
+  slides.forEach((s,k)=>{
+    const pill = s.querySelector('.title-pill') || s.querySelector('h1.main');
+    const txt = (pill && pill.textContent.trim()) || ('Slide '+(k+1));
+    const c = document.createElement('div');
+    c.className='ov-card'+(k===i?' is':'');
+    c.innerHTML = '<div class="mini">'+txt+'</div><div class="tag">#'+(k+1)+'</div>';
+    c.onclick=()=>{ show(k); toggleOv(); };
+    ovGrid.appendChild(c);
   });
+  window.addEventListener('keydown', e=>{
+    if(e.target.tagName==='INPUT' && e.target.type==='range') return;
+    if(['ArrowRight','PageDown',' '].includes(e.key)){ show(i+1); e.preventDefault(); }
+    else if(['ArrowLeft','PageUp'].includes(e.key)){ show(i-1); e.preventDefault(); }
+    else if(e.key==='Home'){ show(0); }
+    else if(e.key==='End'){ show(N-1); }
+    else if(e.key==='f' || e.key==='F'){ document.getElementById('fs').click(); }
+    else if(e.key==='o' || e.key==='O'){ toggleOv(); }
+    else if(e.key==='n' || e.key==='N'){ document.getElementById('notesBtn').click(); }
+    else if(e.key==='Escape'){ if(ov.classList.contains('show')) toggleOv(); }
+    else if(/^[0-9]$/.test(e.key)){ const n=parseInt(e.key,10); if(n>0) show(n-1); else show(9); }
+  });
+  if(location.hash){ const n=parseInt(location.hash.slice(1),10); if(!isNaN(n)) show(n-1); }
+  window.addEventListener('hashchange',()=>{ const n=parseInt(location.hash.slice(1),10); if(!isNaN(n)) show(n-1); });
+
+  // Idle HUD fade
+  const hud = document.querySelector('.hud');
+  const hint = document.getElementById('hint');
+  let timer=null;
+  const IDLE = 2200;
+  function wake(){
+    hud.classList.remove('idle'); hint.classList.remove('idle');
+    clearTimeout(timer);
+    timer=setTimeout(()=>{ hud.classList.add('idle'); hint.classList.add('idle'); }, IDLE);
+  }
+  ['mousemove','keydown','touchstart','click'].forEach(ev=>window.addEventListener(ev, wake));
+  wake();
+})();
+
+// ============== SLIDE 5 — AUGMENTATION ==============
+(() => {
+  const c = document.getElementById('augC'); const ctx = c.getContext('2d');
+  const img = document.getElementById('imgPara');
+  const rot = document.getElementById('augRot'), bri = document.getElementById('augBri');
+  const con = document.getElementById('augCon'), noi = document.getElementById('augNoi');
+  const rotR = document.getElementById('augRotR'), briR = document.getElementById('augBriR');
+  const conR = document.getElementById('augConR'), noiR = document.getElementById('augNoiR');
+  let flipH = false;
+
+  function gauss(){ // Box-Muller
+    const u = 1 - Math.random(), v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+  function draw(){
+    ctx.fillStyle = '#fafbfd'; ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle = 'var(--navy)';
+    ctx.font='600 12px -apple-system';
+    ctx.fillStyle = '#1E3A8A';
+    ctx.fillText('Original', 60, 16);
+    ctx.fillText('Augmented', 320, 16);
+
+    // Original at left
+    ctx.drawImage(img, 30, 30, 220, 220);
+    ctx.strokeStyle='#1E3A8A33'; ctx.strokeRect(30,30,220,220);
+
+    // Augmented at right — apply transforms
+    ctx.save();
+    ctx.translate(290+110, 30+110); // center of right block
+    if(flipH) ctx.scale(-1,1);
+    ctx.rotate(rot.value * Math.PI/180);
+    ctx.drawImage(img, -110, -110, 220, 220);
+    ctx.restore();
+
+    // Read back, apply pixel ops (bri/con/noise)
+    const region = ctx.getImageData(290,30,220,220);
+    const d = region.data;
+    const b = parseFloat(bri.value), k = parseFloat(con.value), s = parseFloat(noi.value);
+    for(let p=0; p<d.length; p+=4){
+      let r = d[p], g = d[p+1], bl = d[p+2];
+      // brightness
+      r *= b; g *= b; bl *= b;
+      // contrast around 128
+      r = (r-128)*k + 128;
+      g = (g-128)*k + 128;
+      bl = (bl-128)*k + 128;
+      // gaussian noise (sigma in 0..0.05 of 255)
+      if(s>0){
+        const n = gauss() * s * 255;
+        r += n; g += n; bl += n;
+      }
+      d[p] = Math.max(0,Math.min(255,r));
+      d[p+1] = Math.max(0,Math.min(255,g));
+      d[p+2] = Math.max(0,Math.min(255,bl));
+    }
+    ctx.putImageData(region, 290, 30);
+    ctx.strokeStyle='#DC262633'; ctx.strokeRect(290,30,220,220);
+
+    rotR.textContent = rot.value+'°';
+    briR.textContent = parseFloat(bri.value).toFixed(2);
+    conR.textContent = parseFloat(con.value).toFixed(2);
+    noiR.textContent = parseFloat(noi.value).toFixed(3);
+  }
+  function reset(){ rot.value=0; bri.value=1; con.value=1; noi.value=0; flipH=false; draw(); }
+  function shuffle(){
+    rot.value = (Math.random()*60-30)|0;
+    bri.value = (0.7 + Math.random()*0.6).toFixed(2);
+    con.value = (0.7 + Math.random()*0.6).toFixed(2);
+    noi.value = (Math.random()*0.05).toFixed(3);
+    flipH = Math.random()<0.5;
+    draw();
+  }
+  [rot, bri, con, noi].forEach(el => el.addEventListener('input', draw));
+  document.getElementById('augShuffle').onclick = shuffle;
+  document.getElementById('augReset').onclick = reset;
+  document.getElementById('augFlip').onclick = ()=>{ flipH = !flipH; draw(); };
+  if(img.complete) draw(); else img.addEventListener('load', draw);
+})();
+
+// ============== SLIDE 6 — PIPELINE LIT ==============
+(() => {
+  const nodes = [...document.querySelectorAll('#pipeRow .pnode')];
+  document.getElementById('pipeRun').onclick = () => {
+    nodes.forEach(n=>n.classList.remove('lit'));
+    nodes.forEach((n, i) => {
+      setTimeout(()=>{ nodes.forEach(x=>x.classList.remove('lit')); n.classList.add('lit'); }, i*450);
+    });
+    setTimeout(()=>nodes.forEach(n=>n.classList.remove('lit')), nodes.length*450 + 400);
+  };
+})();
+
+// ============== SLIDE 8 — FORWARD PASS ==============
+(() => {
+  const boxes = [...document.querySelectorAll('#fpRow .fp-box')];
+  const canvases = boxes.map(b => b.querySelector('canvas'));
+  const probBar = document.getElementById('fpProb');
+  const verdict = document.getElementById('fpVerdict');
+  const samples = [
+    { img: document.getElementById('imgPara'), label: 'parasitized', prob: 0.92, color: '#DC2626' },
+    { img: document.getElementById('imgUninf'), label: 'uninfected', prob: 0.06, color: '#059669' }
+  ];
+  let cur = 0;
+
+  function paintInput(canvas, img){
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    if(img.complete) ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  }
+  // Generate stylized "feature maps" with controllable intensity
+  function paintFeature(canvas, seed, intensity, hue){
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    const id = ctx.createImageData(w, h);
+    const d = id.data;
+    let s = seed;
+    function rng(){ s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; }
+    for(let y=0; y<h; y++){
+      for(let x=0; x<w; x++){
+        // smooth blob noise
+        const nx = x/w - 0.5, ny = y/h - 0.5;
+        const r = Math.sqrt(nx*nx + ny*ny);
+        const v = Math.max(0, Math.min(1, intensity * (0.4 + 0.6*Math.cos(r*8)*Math.sin(rng()*6)) ));
+        const p = (y*w + x) * 4;
+        const tone = Math.floor(40 + 200*v*intensity);
+        if(hue === 'red'){ d[p]=tone; d[p+1]=Math.floor(tone*0.3); d[p+2]=Math.floor(tone*0.3); }
+        else if(hue === 'green'){ d[p]=Math.floor(tone*0.3); d[p+1]=tone; d[p+2]=Math.floor(tone*0.4); }
+        else { d[p]=Math.floor(tone*0.6); d[p+1]=Math.floor(tone*0.7); d[p+2]=tone; }
+        d[p+3] = 255;
+      }
+    }
+    ctx.putImageData(id, 0, 0);
+  }
+  function paintOutput(canvas, prob, color){
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.font='700 14px -apple-system'; ctx.textAlign='center';
+    ctx.fillStyle = color;
+    ctx.fillText('P=' + prob.toFixed(2), canvas.width/2, canvas.height/2 - 4);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.font='600 9px -apple-system';
+    ctx.fillText(prob>0.5 ? 'PARASITIZED' : 'UNINFECTED', canvas.width/2, canvas.height/2 + 12);
+  }
+  function reset(){
+    boxes.forEach(b=>b.classList.remove('lit'));
+    paintInput(canvases[0], samples[cur].img);
+    paintFeature(canvases[1], 1, 0, 'blue');
+    paintFeature(canvases[2], 2, 0, 'blue');
+    paintFeature(canvases[3], 3, 0, 'blue');
+    const oCtx = canvases[4].getContext('2d');
+    oCtx.fillStyle = '#0f172a'; oCtx.fillRect(0,0,64,64);
+    probBar.style.width = '0%';
+    verdict.textContent = 'awaiting…';
+  }
+  function run(){
+    reset();
+    const samp = samples[cur];
+    const seq = [
+      { i: 0, do: () => paintInput(canvases[0], samp.img) },
+      { i: 1, do: () => paintFeature(canvases[1], 11, 0.9, 'blue') },
+      { i: 2, do: () => paintFeature(canvases[2], 22, 0.7, 'blue') },
+      { i: 3, do: () => paintFeature(canvases[3], 33, 0.5, samp.label==='parasitized'?'red':'green') },
+      { i: 4, do: () => {
+          paintOutput(canvases[4], samp.prob, samp.color);
+          probBar.style.width = (samp.prob*100).toFixed(0) + '%';
+          probBar.style.background = samp.color;
+          verdict.textContent = (samp.prob*100).toFixed(0) + '% ' + samp.label;
+          verdict.style.color = samp.color;
+        }
+      }
+    ];
+    seq.forEach((step, k) => {
+      setTimeout(()=>{
+        boxes.forEach(b=>b.classList.remove('lit'));
+        boxes[step.i].classList.add('lit');
+        step.do();
+      }, k*550);
+    });
+    setTimeout(()=>boxes.forEach(b=>b.classList.remove('lit')), seq.length*550 + 400);
+  }
+  document.getElementById('fpRun').onclick = run;
+  document.getElementById('fpSwap').onclick = () => { cur = 1-cur; reset(); };
+  // Initial paint when image is ready
+  if(samples[0].img.complete) reset(); else samples[0].img.addEventListener('load', reset);
+})();
+
+// ============== SLIDE 10 — THRESHOLD + ROC ==============
+(() => {
+  const slider = document.getElementById('thrSlider');
+  const r = document.getElementById('thrR');
+  const tn = document.getElementById('cmTN'), fp = document.getElementById('cmFP');
+  const fn = document.getElementById('cmFN'), tp = document.getElementById('cmTP');
+  const cap = document.getElementById('cmCap');
+  const c = document.getElementById('rocC'); const ctx = c.getContext('2d');
+  // Scale factor: synth = 400, real = 4135 → multiply by 4135/400 ≈ 10.34
+  const SCALE = 4135 / PREDS.length;
+
+  // Pre-compute ROC
+  const sorted = [...PREDS].sort((a,b)=>a[1]-b[1]);
+  const totalP = PREDS.filter(p=>p[0]===1).length;
+  const totalN = PREDS.length - totalP;
+  function curve(){
+    const pts = [];
+    for(let t=0; t<=100; t++){
+      const thr = t/100;
+      let tpC=0, fpC=0;
+      for(const [y,p] of PREDS){
+        if(p>=thr){ if(y===1) tpC++; else fpC++; }
+      }
+      pts.push([fpC/totalN, tpC/totalP]);
+    }
+    return pts;
+  }
+  const ROC = curve();
+
+  function drawROC(thr){
+    const W=c.width, H=c.height;
+    const pad=44;
+    ctx.fillStyle='#fafbfd'; ctx.fillRect(0,0,W,H);
+    // axes
+    ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(pad,H-pad); ctx.lineTo(W-pad,H-pad); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,H-pad); ctx.stroke();
+    // grid + diag
+    ctx.strokeStyle='#e2e8f0';
+    for(let g=0.25; g<=0.75; g+=0.25){
+      ctx.beginPath(); ctx.moveTo(pad + g*(W-2*pad), pad); ctx.lineTo(pad + g*(W-2*pad), H-pad); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(pad, pad + g*(H-2*pad)); ctx.lineTo(W-pad, pad + g*(H-2*pad)); ctx.stroke();
+    }
+    ctx.strokeStyle='#94a3b8'; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(pad, H-pad); ctx.lineTo(W-pad, pad); ctx.stroke();
+    ctx.setLineDash([]);
+    // labels
+    ctx.fillStyle='#475569'; ctx.font='600 11px -apple-system'; ctx.textAlign='center';
+    ctx.fillText('False Positive Rate', W/2, H-12);
+    ctx.save(); ctx.translate(14, H/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText('True Positive Rate', 0, 0); ctx.restore();
+    ctx.textAlign='left';
+    ctx.fillText('0', pad-3, H-pad+14); ctx.fillText('1', W-pad-3, H-pad+14);
+    ctx.fillText('1', pad-12, pad+4);
+    // curve
+    ctx.strokeStyle='#1E3A8A'; ctx.lineWidth=2.5;
+    ctx.beginPath();
+    for(let k=0; k<ROC.length; k++){
+      const [x,y] = ROC[k];
+      const cx = pad + x*(W-2*pad), cy = H-pad - y*(H-2*pad);
+      if(k===0) ctx.moveTo(cx,cy); else ctx.lineTo(cx,cy);
+    }
+    ctx.stroke();
+    // current threshold dot
+    const ti = Math.round(thr*100);
+    const [x,y] = ROC[ti];
+    const cx = pad + x*(W-2*pad), cy = H-pad - y*(H-2*pad);
+    ctx.beginPath(); ctx.fillStyle='#DC2626'; ctx.arc(cx, cy, 7, 0, 2*Math.PI); ctx.fill();
+    ctx.beginPath(); ctx.fillStyle='#fff'; ctx.arc(cx, cy, 2.5, 0, 2*Math.PI); ctx.fill();
+    // legend
+    ctx.fillStyle='#1E3A8A'; ctx.font='700 12px -apple-system';
+    ctx.fillText('AUC = 0.988', W-pad-90, pad+18);
+    ctx.fillStyle='#DC2626'; ctx.font='600 11px -apple-system';
+    ctx.fillText('FPR='+x.toFixed(2)+'  TPR='+y.toFixed(2), W-pad-150, pad+36);
+  }
+
+  function update(){
+    const thr = parseFloat(slider.value);
+    r.textContent = thr.toFixed(2);
+    let tnC=0, fpC=0, fnC=0, tpC=0;
+    for(const [y,p] of PREDS){
+      const pred = p >= thr ? 1 : 0;
+      if(y===1 && pred===1) tpC++;
+      else if(y===0 && pred===0) tnC++;
+      else if(y===0 && pred===1) fpC++;
+      else fnC++;
+    }
+    tn.textContent = Math.round(tnC*SCALE).toLocaleString();
+    fp.textContent = Math.round(fpC*SCALE).toLocaleString();
+    fn.textContent = Math.round(fnC*SCALE).toLocaleString();
+    tp.textContent = Math.round(tpC*SCALE).toLocaleString();
+    const acc = (tnC+tpC)/PREDS.length;
+    cap.innerHTML = '<b>Accuracy at this threshold:</b> ' + (acc*100).toFixed(2) + '% &nbsp;·&nbsp; predictions scaled to 4,135-image test set.';
+    drawROC(thr);
+  }
+  slider.addEventListener('input', update);
+  document.getElementById('thrReset').onclick = () => { slider.value = 0.5; update(); };
+  update();
+})();
+
+// ============== SLIDE 11 — GRAD-CAM REVEAL ==============
+(() => {
+  function setup(canvasId, sliderId, labId, srcImg, isParasitized){
+    const c = document.getElementById(canvasId);
+    const ctx = c.getContext('2d');
+    const slider = document.getElementById(sliderId);
+    const lab = document.getElementById(labId);
+    function draw(){
+      const a = parseInt(slider.value, 10) / 100;
+      ctx.fillStyle='#000'; ctx.fillRect(0,0,c.width,c.height);
+      if(srcImg.complete) ctx.drawImage(srcImg, 0, 0, c.width, c.height);
+      // Overlay synthetic Grad-CAM heatmap
+      const W = c.width, H = c.height;
+      const id = ctx.getImageData(0, 0, W, H);
+      const d = id.data;
+      // Heatmap: a couple of Gaussian blobs at parasite locations (or center for uninfected)
+      const blobs = isParasitized ? [
+        { cx: 0.42, cy: 0.40, r: 0.20, w: 1.0 },
+        { cx: 0.55, cy: 0.60, r: 0.14, w: 0.7 }
+      ] : [
+        { cx: 0.50, cy: 0.50, r: 0.30, w: 0.45 }
+      ];
+      for(let y=0; y<H; y++){
+        for(let x=0; x<W; x++){
+          let v = 0;
+          for(const b of blobs){
+            const dx = x/W - b.cx, dy = y/H - b.cy;
+            v = Math.max(v, b.w * Math.exp(-(dx*dx+dy*dy)/(2*b.r*b.r)));
+          }
+          v = Math.min(1, v);
+          // jet-ish colormap: red high, green mid, blue low
+          let cr, cg, cb;
+          if(v < 0.25){ cr = 0; cg = Math.round(v*4*255); cb = 255; }
+          else if(v < 0.5){ cr = 0; cg = 255; cb = Math.round(255*(1 - (v-0.25)*4)); }
+          else if(v < 0.75){ cr = Math.round((v-0.5)*4*255); cg = 255; cb = 0; }
+          else { cr = 255; cg = Math.round(255*(1 - (v-0.75)*4)); cb = 0; }
+          const blend = a * v;
+          const p = (y*W + x)*4;
+          d[p] = Math.round(d[p]*(1-blend) + cr*blend);
+          d[p+1] = Math.round(d[p+1]*(1-blend) + cg*blend);
+          d[p+2] = Math.round(d[p+2]*(1-blend) + cb*blend);
+        }
+      }
+      ctx.putImageData(id, 0, 0);
+      lab.textContent = a < 0.05 ? 'Raw image' : a > 0.95 ? 'Heatmap full' : 'Blend ' + Math.round(a*100) + '%';
+    }
+    slider.addEventListener('input', draw);
+    if(srcImg.complete) draw(); else srcImg.addEventListener('load', draw);
+  }
+  setup('rev1', 'rev1s', 'rev1lab', document.getElementById('imgPara'), true);
+  setup('rev2', 'rev2s', 'rev2lab', document.getElementById('imgUninf'), false);
+})();
 </script>
 </body>
 </html>
